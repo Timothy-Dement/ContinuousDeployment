@@ -7,10 +7,10 @@ Team Members:
 * Sourabh Saha (sssaha2)
 * Timothy Dement (tmdement)
 
-### 1. [Configuration Management and Build Milestone](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/cm+build)
+[CONFIGURATION AND BUILD MILESTONE &#8594;](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/cm+build)
 
-### 2. [Testing and Analysis Milestone](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/test+analysis)
+[TESTING AND ANALYSIS MILESTONE &#8594;](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/test+analysis)
 
-### 3. [Deployment Milestone](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/deploy)
+[DEPLOYMENT MILESTONE &#8594;](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/deploy)
 
-### 4. [Special Milestone](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/special)
+[SPECIAL MILESTONE &#8594;](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/special)
