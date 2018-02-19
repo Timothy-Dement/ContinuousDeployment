@@ -1,5 +1,5 @@
 ---
-- hosts: jenkins
+- hosts: jenkins-tester
   gather_facts: no
   tasks:
   - name: Ping all hosts

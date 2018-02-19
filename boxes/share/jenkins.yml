@@ -1,0 +1,53 @@
+---
+- hosts: jenkins-tester
+
+  gather_facts: no
+
+  become: yes
+
+  tasks:
+
+    - name: Install Git, Java JDK, Nodejs, NPM, Maven
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+      with_items:
+      - "git"
+      - "default-jdk"
+      - "nodejs"
+      - "npm"
+      - "maven"
+
+    - name: Get Jenkins key
+      apt_key:
+        url: https://pkg.jenkins.io/debian/jenkins.io.key
+
+    - name: Add Jenkins repo
+      apt_repository:
+        repo: "deb http://pkg.jenkins.io/debian-stable binary/"
+
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        update_cache: yes
+
+    - name: Create init.groovy.d directory
+      file:
+        path: /var/lib/jenkins/init.groovy.d
+        state: directory
+        mode: 0755
+
+    - name: Configure default Jenkins users
+      template:
+        src: configure-users.groovy
+        dest: /var/lib/jenkins/init.groovy.d/configure-users.groovy
+        owner: jenkins
+        group: jenkins
+        mode: 0755
+
+    - name: Restart Jenkins
+      service:
+        name: jenkins
+        state: restarted
+
+    - name: Get the 
