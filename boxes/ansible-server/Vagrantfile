@@ -43,7 +43,7 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "../share", "/share"
+  config.vm.synced_folder "../share", "/home/vagrant/share"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -63,12 +63,35 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", inline: <<-SHELL
-    apt-add-repository ppa:ansible/ansible
-    apt-get update
-    apt-get install -y ansible
-    apt-get install -y git
-    apt-get install -y nodejs
-    apt-get install -y npm
+  config.vm.provision "shell", privileged: "false", inline: <<-SHELL
+
+    sudo apt-add-repository ppa:ansible/ansible
+    sudo apt-get update
+    sudo apt-get install -y ansible
+    sudo apt-get install -y git
+    sudo apt-get install -y nodejs
+    sudo apt-get install -y npm
+
+    sudo echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> /etc/environment
+    sudo echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> /etc/environment
+
+    source /etc/environment
+
+    git clone https://github.com/timothy-dement/JenkinsProvisioner.git
+
+    cd /home/vagrant/JenkinsProvisioner && npm install
+
+    mkdir /home/vagrant/share/keys
+
+    mkdir /home/vagrant/share/roles
+    mkdir /home/vagrant/share/roles/common
+    mkdir /home/vagrant/share/roles/common/tasks
+    mkdir /home/vagrant/share/roles/common/handlers
+    mkdir /home/vagrant/share/roles/common/files
+    mkdir /home/vagrant/share/roles/common/templates
+    mkdir /home/vagrant/share/roles/common/vars
+    mkdir /home/vagrant/share/roles/common/defaults
+    mkdir /home/vagrant/share/roles/common/meta
+
   SHELL
 end
