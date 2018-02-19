@@ -1,3 +1,0 @@
-[submodule "JenkinsProvisioner"]
-	path = JenkinsProvisioner
-	url = https://github.com/timothy-dement/JenkinsProvisioner.git
