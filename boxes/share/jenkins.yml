@@ -31,16 +31,35 @@
         name: jenkins
         update_cache: yes
 
+    - name: Disable Jenkins setup wizard
+      lineinfile:
+        dest: /etc/default/jenkins
+        regexp: '^JAVA_ARGS='
+        line: 'JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
+
+    - name: Restart Jenkins
+      service:
+        name: jenkins
+        state: restarted
+
     - name: Create init.groovy.d directory
       file:
         path: /var/lib/jenkins/init.groovy.d
         state: directory
         mode: 0755
 
-    - name: Configure default Jenkins users
+    - name: Copy configure default Jenkins users script
       template:
         src: configure-users.groovy
         dest: /var/lib/jenkins/init.groovy.d/configure-users.groovy
+        owner: jenkins
+        group: jenkins
+        mode: 0755
+
+    - name: Copy retrieve Jenkins user token script
+      template:
+        src: retrieve-token.groovy
+        dest: /var/lib/jenkins/init.groovy.d/retrieve-token.groovy
         owner: jenkins
         group: jenkins
         mode: 0755
@@ -50,4 +69,15 @@
         name: jenkins
         state: restarted
 
-    - name: Get the 
+    - name: Wait for Jenkins to start up before proceeding
+      shell: "curl -D - --silent --max-time 5 http://{{ jenkins_ip_address }}:8080/cli/"
+      register: result
+      until: (result.stdout.find("403 Forbidden") != -1) or (result.stdout.find("200 OK") != -1) and (result.stdout.find("Please wait while") == -1)
+      retries: 60
+      delay: 5
+      changed_when: false
+      check_mode: no
+
+    - name: Retreive token
+      shell: "grep JENKINS_TOKEN /var/log/jenkins/jenkins.log"
+      register: jenkins_token
