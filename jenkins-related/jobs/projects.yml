@@ -12,7 +12,7 @@
            name: iTrust2
            command: |
              rm -rf *
-             git clone https://sssaha2:casper234@github.ncsu.edu/engr-csc326-staff/iTrust2-v2.git
+             git clone https://sssaha2:PASSWORD@github.ncsu.edu/engr-csc326-staff/iTrust2-v2.git
              cd iTrust2-v2/iTrust2/
              cp src/main/java/db.properties.template src/main/java/db.properties
              cp src/main/resources/hibernate.properties.template src/main/resources/hibernate.properties
