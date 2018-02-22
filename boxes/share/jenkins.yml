@@ -1,13 +1,17 @@
 ---
-- hosts: jenkins-tester
-
-  gather_facts: no
+- hosts: jenkins-four
 
   become: yes
 
+  gather_facts: no
+
+  pre_tasks:
+    - name: "Install Python 2"
+      raw: sudo apt-get install -y python-simplejson
+
   tasks:
 
-    - name: Install Git, Java JDK, Nodejs, NPM, Maven
+    - name: Install Git, Java, Node.js, NPM, Maven, MySQL
       apt:
         name: "{{ item }}"
         update_cache: yes
@@ -17,6 +21,33 @@
       - "nodejs"
       - "npm"
       - "maven"
+      - "python-pip"
+
+    - name: Set MySQL root password
+      debconf:
+        name: mysql-server
+        question: mysql-server/root_password
+        value: root
+        vtype: password
+
+    - name: Confirm MySQL root password
+      debconf:
+        name: mysql-server
+        question: mysql-server/root_password_again
+        value: root
+        vtype: password
+
+    - name: Install MySQL server
+      apt:
+        name: mysql-server
+        update-cache: yes
+
+    - name: Start MySQl server
+      service:
+        name: mysql
+        state: started
+
+    # INSTALL ANSIBLE
 
     - name: Get Jenkins key
       apt_key:
@@ -31,16 +62,15 @@
         name: jenkins
         update_cache: yes
 
+    # - name: Add Ansible ppa
+    #   apt_repository:
+
+
     - name: Disable Jenkins setup wizard
       lineinfile:
         dest: /etc/default/jenkins
         regexp: '^JAVA_ARGS='
         line: 'JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
-
-    - name: Restart Jenkins
-      service:
-        name: jenkins
-        state: restarted
 
     - name: Create init.groovy.d directory
       file:
@@ -52,25 +82,33 @@
       template:
         src: configure-users.groovy
         dest: /var/lib/jenkins/init.groovy.d/configure-users.groovy
-        owner: jenkins
-        group: jenkins
         mode: 0755
 
     - name: Copy retrieve Jenkins user token script
       template:
         src: retrieve-token.groovy
         dest: /var/lib/jenkins/init.groovy.d/retrieve-token.groovy
-        owner: jenkins
-        group: jenkins
         mode: 0755
 
+
+    - name: Install postbuild-task Jenkins plugin
+      jenkins_plugin:
+        name: postbuild-task
+        params:
+          url_username: admin
+        url_password: admin
+        with_dependencies: yes
+
     - name: Restart Jenkins
+      become: yes
       service:
         name: jenkins
         state: restarted
 
+    # NEED TO UPDATE IP ADDRESS HERE
+
     - name: Wait for Jenkins to start up before proceeding
-      shell: "curl -D - --silent --max-time 5 http://{{ jenkins_ip_address }}:8080/cli/"
+      shell: "curl -D - --silent --max-time 5 http://192.168.33.104:8080/cli/"
       register: result
       until: (result.stdout.find("403 Forbidden") != -1) or (result.stdout.find("200 OK") != -1) and (result.stdout.find("Please wait while") == -1)
       retries: 60
@@ -78,6 +116,69 @@
       changed_when: false
       check_mode: no
 
+    # CONSIDER USING AN ANSIBLE VARIABLE FOR USERNAME/PASSWORD
+
+
     - name: Retreive token
-      shell: "grep JENKINS_TOKEN /var/log/jenkins/jenkins.log"
+      shell: "grep JENKINS_TOKEN /var/log/jenkins/jenkins.log | tail -1"
+      register: temp_token
+
+    - name: Export JENKINS_USER environment variable
+      shell: 'echo "export JENKINS_USER=admin" >> /etc/environment'
+
+    - name: Export JENKINS_TOKEN environment variable
+      shell: 'echo "export {{ temp_token.stdout_lines[0] }}" >> /etc/environment'
+
+    - name: Set jenkins_token variable
+      shell: 'echo $JENKINS_TOKEN'
       register: jenkins_token
+
+    - name: Install jenkins-job-builder
+      pip:
+        name: jenkins-job-builder
+        # executable: pip2
+
+    - name: Create jenkins_jobs directory
+      file:
+        path: /etc/jenkins_jobs
+        state: directory
+        mode: 0755
+
+    - name: Copy jenkins_jobs.ini script
+      template:
+        src: jenkins_jobs.ini
+        dest: /etc/jenkins_jobs/jenkins_jobs.ini
+        mode: 0755
+        force: yes
+
+    - name: Create jobs directory
+      file:
+        path: /home/vagrant/jobs
+        state: directory
+        mode: 0755
+
+    - name: Copy job file templates
+      become: yes
+      template:
+        src: "{{ item }}"
+        dest: "/home/vagrant/jobs/{{ item }}"
+        force: yes
+        mode: 0755
+      with_items:
+      - "defaults.yml"
+      - "projects.yml"
+      - "test.yml"
+
+    - name: Update jobs
+      shell: "jenkins-jobs update --delete-old jobs"
+
+    # - name: Do someting?
+    #   shell: 'export CRUMB=$(curl -s "http://$JENKINS_USER:$JENKINS_TOKEN@localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")'
+
+    - name: Do something else?
+      shell: 'curl -X POST http://127.0.0.1:8080/job/{{ item }}/build --user $JENKINS_USER:$JENKINS_TOKEN'
+      with_items:
+      - "checkbox.io_job"
+      - "iTrust2_job"
+
+

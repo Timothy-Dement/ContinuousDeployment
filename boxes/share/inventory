@@ -2,4 +2,10 @@
 52.44.251.166 ansible_user=ubuntu ansible_ssh_private_key_file=./keys/jenkins.key ansible_python_interpreter=/usr/bin/python3
 
 [jenkins-tester]
-192.168.33.102 ansible_user=vagrant ansible_ssh_private_key_file=./keys/jenkins-tester.key ansible_python_interpreter=/usr/bin/python3
+192.168.33.102 ansible_user=vagrant ansible_ssh_private_key_file=./keys/jenkins-tester.key
+
+[jenkins-three]
+192.168.33.103 ansible_user=vagrant ansible_ssh_private_key_file=./keys/jenkins-three.key
+
+[jenkins-four]
+192.168.33.104 ansible_user=vagrant ansible_ssh_private_key_file=./keys/jenkins-four.key
