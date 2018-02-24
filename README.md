@@ -2,7 +2,9 @@
 
 [&#8592; MASTER BRANCH](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT)
 
-Team Members:
+Latest code can be found [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/cm%2Bbuild/boxes/share)
+
+# Team Members:
 
 * Kanchan Bisht (kbisht)
 * Priyanka Jain (pjain15)
