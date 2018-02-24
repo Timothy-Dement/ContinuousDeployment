@@ -22,12 +22,12 @@ Installation through the package manager was fairly easy. The first major hurdle
 Jenkins requires us to pass a temporary token to a textbox to enable the admin login and create an admin user. But our goal was to automate Jenkins installation process so we had to do this initial admin user setup through code
 
 The process that we used is as follows:
-1. We wrote a groovy [script](), which sets up the admin user, as a template in ansible
+1. We wrote a groovy script, which sets up the admin user, as a template in ansible
 2. We created a directory in `/var/lib/jenkins/` called `init.groovy.d/` .This directory is searched automatically by Jenkins on startup and all scripts inside this directory are executed
 3. We also add `JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"` to bypass the initial setup wizard
 
 We also needed the Jenkins API token for the admin user in order to automate build starts through the REST api
-1. We first log the token using a groovy [script]()
+1. We first log the token using a groovy script
 2. Then we use the `grep` tool to read through the logs in `/var/log/jenkins/jenkins.log` and retrieve the API token and store it as a variable in `/etc/environment`
 3. The security issue is avoided as only a person with root privileges is allowed to access the logs
 
@@ -72,5 +72,5 @@ Setting up the correct version of MongoDB was challenging as we were initially u
 ## Contributions:
 * Kanchan Bisht(kbisht): Setting up iTrust2 application after successful post-build job.
 * Priyanka Jain (pjain15): Setting up checkbox.io application after successful post-build job.
-* Sourabh Saha (sssaha2):
-* Timothy Dement (tmdement):
+* Sourabh Saha (sssaha2) and Timothy Dement (tmdement): Automated provisioning of EC2 instances and automation of jenkins and jenkins-jobs from job templates and post-build scripts 
+
