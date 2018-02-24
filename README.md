@@ -69,6 +69,9 @@ There was no ReadMe file available for setting up checkbox.io application, so it
 We were not sure of the location where nginx should be installed. Incorrect placement was leading to errors.
 Setting up the correct version of MongoDB was challenging as we were initially using a xenial ec2 instance in which mongodb/init was not being created. We figured out that we needed MongoDB enterprise 3.6 in xenial. Even, after downloading that, we continued facing configuration errors with MongoDB. We did not face any such issues while using trusty64 image. More information about this issue can be found using this [link](https://docs.mongodb.com/getting-started/shell/tutorial/install-mongodb-on-ubuntu/).
 
+## Integration
+The integration of the entire build pipeline was done using post-build tasks. We used the postbuild-task plugin of jenkins, which allowed us to execute shell scripts after the build job is complete. The post-build tasks provisioned the EC2 instance on which to deploy the app and then ran an ansible play book to automatically build and run the application on the newly created VM
+
 ## Contributions:
 * Kanchan Bisht(kbisht): Setting up iTrust2 application after successful post-build job.
 * Priyanka Jain (pjain15): Setting up checkbox.io application after successful post-build job.
