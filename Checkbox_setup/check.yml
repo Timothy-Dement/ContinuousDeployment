@@ -1,5 +1,5 @@
 - name: Setup Checkbox
-  hosts: server_check
+  hosts: checkbox_trusty
   become: yes
 
   # vars:
@@ -17,7 +17,7 @@
         update_cache: yes
       with_items:
       - "git"
-      - "nodejs"
+      - "nodejs-legacy"
       - "npm"
    
     - name: Add Mongodb ppa key
@@ -77,7 +77,7 @@
     - name: Clone Checkbox
       git:
         repo: https://github.com/chrisparnin/checkbox.io.git
-        dest: /home/vagrant/Checkbox
+        dest: /home/{{ansible_ssh_user}}/Checkbox
       become: yes
       when: repo_dir.stat.isdir is not defined
 
@@ -102,53 +102,35 @@
 
     - name: install packages
       npm:
-        path: /home/vagrant/Checkbox/server-side/site
+        path: /home/{{ansible_ssh_user}}/Checkbox/server-side/site
         state: latest
 
     - name: update location of public_html into default
       replace:
-        dest: /home/vagrant/Checkbox/local-conf/default
+        dest: /home/{{ansible_ssh_user}}/Checkbox/local-conf/default
         regexp: '/Users/gameweld/bitbucket/checkbox.io/checkbox.io/public_html'
-        replace: '/home/vagrant/Checkbox/public_html'
+        replace: '/home/{{ansible_ssh_user}}/Checkbox/public_html'
     
     - name: Copy default to different location
       copy:
-        src: /home/vagrant/Checkbox/local-conf/default
+        src: /home/{{ansible_ssh_user}}/Checkbox/local-conf/default
         dest: /etc/nginx/sites-available/default
         remote_src: yes
 
     - name: Copy nginx to diferent location
       copy:
-        src: /home/vagrant/Checkbox/local-conf/nginx.conf
+        src: /home/{{ansible_ssh_user}}/Checkbox/local-conf/nginx.conf
         dest: /etc/nginx/
         remote_src: yes
 
     - name: restart nginx
       service: name=nginx state=restarted enabled=yes
 
-    # - name: "Install forever (to run Node.js app)."
-      # npm: name=forever global=yes state=present
+    - name: Install forever
+      npm: name=forever global=yes state=present
     
-    # - name: "Check list of Node.js apps running."
-      # command: forever list
-      # register: forever_list
-      # changed_when: false
-
-    # - name: "Start example Node.js app."
-      # command: forever start /home/vagrant/Checkbox/server-side/server.js
-      # when: "forever_list.stdout.find('/path/to/app.js') == -1"
-
-    # - name: start service
-
-
-    # - name: Set mongodb environment variables
-    #   blockinfile:
-    #     path: /etc/environment
-    #     block: |
-    #       MONGO_PORT="3002"
-    #       MONGO_IP="localhost"
-    #       MONGO_USER="admin"
-    #       MONGO_PASSWORD="root"
-    #       MONGO_TEST="TEST"
-
-
+    - name: Start application
+      command: forever start /home/{{ansible_ssh_user}}/Checkbox/server-side/site/server.js
+     
+    - name: restart nginx
+      service: name=nginx state=restarted enabled=yes
