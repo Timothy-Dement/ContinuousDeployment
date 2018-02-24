@@ -77,3 +77,5 @@ The integration of the entire build pipeline was done using post-build tasks. We
 * Priyanka Jain (pjain15): Setting up checkbox.io application after successful post-build job.
 * Sourabh Saha (sssaha2) and Timothy Dement (tmdement): Automated provisioning of EC2 instances and automation of jenkins and jenkins-jobs from job templates and post-build scripts 
 
+## Screencast
+You can see the demo of the project in this [Screencast]()
