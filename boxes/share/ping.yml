@@ -1,5 +1,5 @@
 ---
-- hosts: jenkins-tester
+- hosts: checkbox
   gather_facts: no
   tasks:
   - name: Ping all hosts

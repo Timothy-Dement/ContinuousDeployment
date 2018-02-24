@@ -1,9 +1,15 @@
 ---
-- hosts: jenkins-four
+- hosts: jenkins
 
-  become: yes
+  vars_files:
+    - defaults/main.yml
+
+  # vars_file:
+  #   - vars.yml
 
   gather_facts: no
+
+  become: yes
 
   pre_tasks:
     - name: "Install Python 2"
@@ -22,6 +28,15 @@
       - "npm"
       - "maven"
       - "python-pip"
+
+    - name: Add Ansible apt apt repository
+      apt_repository:
+        repo: ppa:ansible/ansible
+
+    - name: Install Ansible
+      apt:
+        name: ansible
+        update_cache: yes
 
     - name: Set MySQL root password
       debconf:
@@ -62,15 +77,63 @@
         name: jenkins
         update_cache: yes
 
-    # - name: Add Ansible ppa
-    #   apt_repository:
+    - name: Remove JenkinsProvisioner repo if present
+      file:
+        path: /home/ubuntu/JenkinsProvisioner
+        state: absent
 
+    - name: Clone JenkinsProvisioner repo
+      git:
+        repo: https://github.com/timothy-dement/JenkinsProvisioner.git
+        dest: /home/ubuntu/JenkinsProvisioner
+        force: yes
+
+    - name: Install JenkinsProvisioner packages
+      shell: "npm install"
+      args:
+          chdir: /home/ubuntu/JenkinsProvisioner
+
+    - name: Pass AWS access key id
+      shell: "echo \"export AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}\" >> /etc/environment"
+
+    - name: Pass AWS secret access key
+      shell: "echo \"export AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}\" >> /etc/environment"
+
+    - name: Pass Github USERNAME
+      shell: "echo \"export GITHUB_USERNAME={{ lookup('env', 'GITHUB_USERNAME') }}\" >> /etc/environment"
+
+    - name: Pass Github password
+      shell: "echo \"export GITHUB_PASSWORD={{ lookup('env', 'GITHUB_PASSWORD') }}\" >> /etc/environment"
 
     - name: Disable Jenkins setup wizard
       lineinfile:
         dest: /etc/default/jenkins
         regexp: '^JAVA_ARGS='
         line: 'JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
+
+    - name: Make port accessible
+      lineinfile:
+        dest: /etc/default/jenkins
+        regexp: '^#--httpListenAddress=$HTTP_HOST (default 0.0.0.0)'
+        line: '--httpListenAddress=$HTTP_HOST (default 0.0.0.0)'
+
+    - name: Restart Jenkins
+      become: yes
+      service:
+        name: jenkins
+        state: restarted
+
+    - debug:
+        var: jenkins_ip_address
+
+    - name: Wait for Jenkins to start up before proceeding
+      shell: "curl -D - --silent --max-time 5 http://{{ jenkins_ip_address }}:8080/cli/"
+      register: result
+      until: (result.stdout.find("403 Forbidden") != -1) or (result.stdout.find("200 OK") != -1) and (result.stdout.find("Please wait while") == -1)
+      retries: 60
+      delay: 5
+      changed_when: false
+      check_mode: no
 
     - name: Create init.groovy.d directory
       file:
@@ -90,25 +153,17 @@
         dest: /var/lib/jenkins/init.groovy.d/retrieve-token.groovy
         mode: 0755
 
-
-    - name: Install postbuild-task Jenkins plugin
-      jenkins_plugin:
-        name: postbuild-task
-        params:
-          url_username: admin
-        url_password: admin
-        with_dependencies: yes
-
     - name: Restart Jenkins
       become: yes
       service:
         name: jenkins
         state: restarted
 
-    # NEED TO UPDATE IP ADDRESS HERE
+    - debug:
+        var: jenkins_ip_address
 
     - name: Wait for Jenkins to start up before proceeding
-      shell: "curl -D - --silent --max-time 5 http://192.168.33.104:8080/cli/"
+      shell: "curl -D - --silent --max-time 5 http://{{ jenkins_ip_address }}:8080/cli/"
       register: result
       until: (result.stdout.find("403 Forbidden") != -1) or (result.stdout.find("200 OK") != -1) and (result.stdout.find("Please wait while") == -1)
       retries: 60
@@ -116,8 +171,19 @@
       changed_when: false
       check_mode: no
 
-    # CONSIDER USING AN ANSIBLE VARIABLE FOR USERNAME/PASSWORD
-
+    # - name: Wait for Jenkins to start up
+    #   uri:
+    #     url: http://{{ jenkins_ip_address }}:8080
+    #     status_code: 200
+    #     timeout: 5
+    #   register: jenkins_service_status
+    #   # Keep trying for 5 mins in 5 sec intervals
+    #   retries: 60
+    #   delay: 5
+    #   until: >
+    #      'status' in jenkins_service_status and
+    #      jenkins_service_status['status'] == 200
+    #   when: jenkins_restart_required
 
     - name: Retreive token
       shell: "grep JENKINS_TOKEN /var/log/jenkins/jenkins.log | tail -1"
@@ -133,10 +199,61 @@
       shell: 'echo $JENKINS_TOKEN'
       register: jenkins_token
 
+    # - name: Do someting?
+    #   shell: 'export CRUMB=$(curl -s "http://$JENKINS_USER:$JENKINS_TOKEN@localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")'
+
+    - name: Install postbuild-task Jenkins plugin
+      jenkins_plugin:
+        name: postbuild-task
+        params:
+          url_username: admin
+        url_password: admin
+        with_dependencies: yes
+        timeout: 30
+        updates_expiration: 86400
+
+    - name: Add Jenkins sudo permissions
+      lineinfile:
+        path: /etc/sudoers
+        line: "jenkins ALL=(ALL) NOPASSWD: ALL"
+
+    - name: Restart Jenkins
+      become: yes
+      service:
+        name: jenkins
+        state: restarted
+
+    # NEED TO UPDATE IP ADDRESS HERE
+
+    # - name: Wait for Jenkins to start up
+    #   uri:
+    #     url: http://{{ jenkins_ip_address }}:8080
+    #     status_code: 200
+    #     timeout: 5
+    #   register: jenkins_service_status
+    #   # Keep trying for 5 mins in 5 sec intervals
+    #   retries: 60
+    #   delay: 5
+    #   until: >
+    #      'status' in jenkins_service_status and
+    #      jenkins_service_status['status'] == 200
+    #   when: jenkins_restart_required
+
+    - name: Wait for Jenkins to start up before proceeding
+      shell: "curl -D - --silent --max-time 5 http://{{ jenkins_ip_address }}:8080/cli/"
+      register: result
+      until: (result.stdout.find("403 Forbidden") != -1) or (result.stdout.find("200 OK") != -1) and (result.stdout.find("Please wait while") == -1)
+      retries: 60
+      delay: 5
+      changed_when: false
+      check_mode: no
+
+    # CONSIDER USING AN ANSIBLE VARIABLE FOR USERNAME/PASSWORD
+
     - name: Install jenkins-job-builder
       pip:
         name: jenkins-job-builder
-        # executable: pip2
+        executable: pip2
 
     - name: Create jenkins_jobs directory
       file:
@@ -153,7 +270,7 @@
 
     - name: Create jobs directory
       file:
-        path: /home/vagrant/jobs
+        path: /home/{{ ansible_ssh_user }}/jobs
         state: directory
         mode: 0755
 
@@ -161,7 +278,7 @@
       become: yes
       template:
         src: "{{ item }}"
-        dest: "/home/vagrant/jobs/{{ item }}"
+        dest: "/home/{{ ansible_ssh_user }}/jobs/{{ item }}"
         force: yes
         mode: 0755
       with_items:
@@ -172,11 +289,11 @@
     - name: Update jobs
       shell: "jenkins-jobs update --delete-old jobs"
 
-    # - name: Do someting?
-    #   shell: 'export CRUMB=$(curl -s "http://$JENKINS_USER:$JENKINS_TOKEN@localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")'
+    - name: Do someting?
+      shell: 'export CRUMB=$(curl -s "http://$JENKINS_USER:$JENKINS_TOKEN@localhost:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")'
 
     - name: Do something else?
-      shell: 'curl -X POST http://127.0.0.1:8080/job/{{ item }}/build --user $JENKINS_USER:$JENKINS_TOKEN'
+      shell: 'curl -X -H CRUMB POST http://127.0.0.1:8080/job/{{ item }}/build --user $JENKINS_USER:$JENKINS_TOKEN'
       with_items:
       - "checkbox.io_job"
       - "iTrust2_job"
