@@ -1,15 +1,13 @@
 # Pipeline Project
 
+| **Team Members** |
+| :--- |
+| Kanchan Bisht (kbisht) |
+| Priyanka Jain (pjain15) |
+| Sourabh Saha (sssaha2) |
+| Timothy Dement (tmdement) |
+
 [&#8592; MASTER BRANCH](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT)
-
-Latest code can be found [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/cm%2Bbuild/boxes/share)
-
-# Team Members:
-
-* Kanchan Bisht (kbisht)
-* Priyanka Jain (pjain15)
-* Sourabh Saha (sssaha2)
-* Timothy Dement (tmdement)
 
 # Configuration and Build Milestone
 
