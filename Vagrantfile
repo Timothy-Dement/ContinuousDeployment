@@ -32,7 +32,7 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network "private_network", ip: "192.168.33.103"
+  config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -43,7 +43,7 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "../share", "/home/vagrant/share"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -63,8 +63,34 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", privileged: "false", inline: <<-SHELL
+
+    sudo apt-add-repository ppa:ansible/ansible
+    sudo apt-get update
+
+    sudo apt-get install -y ansible
+    sudo apt-get install -y git
+    sudo apt-get install -y nodejs
+    sudo apt-get install -y npm
+
+    sudo echo "export AWS_ACCESS_KEY_ID=#{ENV['AWS_ACCESS_KEY_ID']}" >> /etc/environment
+    sudo echo "export AWS_SECRET_ACCESS_KEY=#{ENV['AWS_SECRET_ACCESS_KEY']}" >> /etc/environment
+
+    sudo echo "export GITHUB_USERNAME=#{ENV['GITHUB_USERNAME']}" >> /etc/environment
+    sudo echo "export GITHUB_PASSWORD=#{ENV['GITHUB_PASSWORD']}" >> /etc/environment
+
+    sudo echo "export JENKINS_USERNAME=#{ENV['JENKINS_USERNAME']}" >> /etc/environment
+    sudo echo "export JENKINS_PASSWORD=#{ENV['JENKINS_PASSWORD']}" >> /etc/environment
+
+    source /etc/environment
+
+    git clone https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.ncsu.edu/tmdement/JenkinsProvisioner.git /home/vagrant/share/JenkinsProvisioner
+
+    cd /home/vagrant/share/JenkinsProvisioner && npm install
+
+    mkdir /home/vagrant/share/JenkinsProvisioner/keys
+
+  SHELL
+
 end
+

@@ -1,3 +1,0 @@
-jenkins_username: "{{ lookup('env', 'JENKINS_USERNAME') }}"
-jenkins_password: "{{ lookup('env', 'JENKINS_PASSWORD') }}"
-jenkins_ip_address: 34.194.246.143

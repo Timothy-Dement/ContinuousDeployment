@@ -1,14 +1,7 @@
 ---
 - name: initialize iTrust server
-  hosts: ec2_instance_iTrust
-  vars_prompt:
-  - name: "gitUsername"
-    prompt: "Enter Unity Id"
-    private: no
 
-  - name: "gitPassword"
-    prompt: "Enter your password"
-    private: yes
+  hosts: itrust
 
   tasks:
   - name: Step 1 Install maven
@@ -45,7 +38,7 @@
     register: result
 
   - name: Step 8 Clone iTrust repo
-    git: repo=https://{{ gitUsername }}:{{ gitPassword }}@github.ncsu.edu/engr-csc326-staff/iTrust2-v2.git dest=/home/{{ ansible_user }}/iTrust
+    git: repo=https://{{ lookup('env', 'GITHUB_USERNAME') }}:{{ lookup('env', 'GITHUB_PASSWORD' ) }}@github.ncsu.edu/engr-csc326-staff/iTrust2-v2.git dest=/home/{{ ansible_user }}/iTrust
     become: yes
     when: result.stat.isdir is not defined
 
@@ -87,7 +80,7 @@
     when: result.stat.isdir is not defined
 
   - name: Step 16 Update the configuration file for mySQL
-    copy: src=/vagrant_data/my.cnf dest=/etc/mysql/my.cnf force=yes
+    copy: src=/home/ubuntu/JenkinsProvisioner/templates/my.cnf dest=/etc/mysql/my.cnf force=yes
     become: yes
 
   - name: Step 17 Restart MySQL
