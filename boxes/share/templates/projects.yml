@@ -10,7 +10,6 @@
              npm install
            post_build_script: |
              sudo nodejs /home/ubuntu/JenkinsProvisioner/aws-checkbox-trusty.js
-             sudo sleep 120
              sudo chown ubuntu /home/ubuntu/checkbox-trusty.key
              sudo ansible-playbook /home/ubuntu/JenkinsProvisioner/checkbox.yml -i /home/ubuntu/inventory-checkbox
       - '{name}_job':
@@ -27,6 +26,5 @@
              mvn clean test verify checkstyle:checkstyle
            post_build_script: |
              sudo nodejs /home/ubuntu/JenkinsProvisioner/aws-itrust.js
-             sudo sleep 120
              sudo chown ubuntu /home/ubuntu/itrust.key
              sudo ansible-playbook /home/ubuntu/JenkinsProvisioner/itrust.yml -i /home/ubuntu/inventory-itrust
