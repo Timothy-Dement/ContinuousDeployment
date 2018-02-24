@@ -134,3 +134,6 @@
      
     - name: restart nginx
       service: name=nginx state=restarted enabled=yes
+
+#resources: https://docs.mongodb.com/getting-started/shell/tutorial/install-mongodb-on-ubuntu/
+#https://stackoverflow.com/questions/20919222/ansible-hangs-when-starting-node-js-server
