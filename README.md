@@ -156,6 +156,8 @@ The following two AWS subscriptions are also required for proper execution of th
 
 #### Steps
 
+---
+
 **I.** In any location on your local machine, create the simple directory structure:
 
 ```shell
@@ -167,7 +169,11 @@ The following two AWS subscriptions are also required for proper execution of th
   
 ```
 
+---
+
 **II.** Copy the [`Vagrantfile`](Vagrantfile) to `boxes/ansible`.
+
+---
 
 **III.** From `boxes/ansible`, provision and connect to the Vagrant VM:
 
@@ -178,6 +184,8 @@ The following two AWS subscriptions are also required for proper execution of th
 	
 ```
 
+---
+
 **IV.** Provision the EC2 instance for Jenkins:
 
 ```shell
@@ -185,6 +193,8 @@ The following two AWS subscriptions are also required for proper execution of th
 	nodejs provisioners/aws-jenkins.js
 	
 ```
+
+---
 
 **V.** When the previous step terminates, configure the Jenkins server:
 
@@ -195,6 +205,8 @@ The following two AWS subscriptions are also required for proper execution of th
 ```
 
 The final task of this playbook will trigger build jobs for checkbox.io and iTrust, which (when successful) will subsequently provision and configure two additional EC2 instances.
+
+---
 
 **VI.** Access your Jenkins server at `< jenkins-ip >:8080` with the username and password you originally set as environment variables. This IP address is available from the Ansible output in Step V.
 
