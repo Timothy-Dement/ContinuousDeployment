@@ -84,7 +84,7 @@ Vagrant.configure("2") do |config|
 
     source /etc/environment
 
-    git clone https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.ncsu.edu/tmdement/JenkinsTestAnalysis.git /home/vagrant/share/JenkinsProvisioner
+    git clone https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.ncsu.edu/tmdement/JenkinsTestAnalysis.git /home/vagrant/share/JenkinsTestAnalysis
 
     cd /home/vagrant/share/JenkinsTestAnalysis && npm install
 
