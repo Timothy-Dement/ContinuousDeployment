@@ -102,3 +102,9 @@ Our approach to fuzz the files is as follows:
 * After the 10 files have been fuzzed, we try to compile the project using `mvn compile`.
 
 * If the compilation is successfull, we go ahead and add the files to the git working tree and commit them so that the build starts automatically. Otherwise, we reset the changes and fuzz a different set of 10 files.
+
+## Automated Test Generation - Checkbox.io
+
+For autogenerating tests, we chose to use a test database. In our pipelining, we added the required MongoDB data to the site database to make the write heads for the API calls. We used the request module to mock the API calls. We used the esprima module to parse server.js file. The call expressions with property name 'get' and 'post' are recognized using esprima and are stored in separate arrays. After this, we have created mock json arguments to passed with get calls and the mock data that we need to pass with post calls. 
+
+One of the challenges that we faced was the coverage for the branches that would be executed on a run-time error/exception. Mocking the data that can lead to exceptions was difficult. For example, some errors could only arise if there would be some problem in the databases/collections/connections of MongoDB. So, if we mock such a case, then the next test cases would fail as the server would crash. Also, when our server was crashing, we were unable to see the coverage statistics.
