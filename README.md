@@ -11,11 +11,20 @@
 
 # Testing and Analysis Milestone
 
-## Coverage/Jenkins Support
+## 1. Coverage / Jenkins Support
+
+The constraints of this milestone required us to customize our Jenkins server in ways that differed from the first milestone, which can be reviewed in the [`jenkins.yml`](playbooks/jenkins.yml) playbook and the first section of the screencast.
+
+Besides separating tasks specific to iTrust and Checkbox.io, we also needed to install an updated version of Node.js and npm, change the Jenkins port from 8080, and add several new plugins to Jenkins, among other minor changes.
+
+Coverage was displayed in Jenkins for iTrust using the `jacoco` plugin (already used by the project), and for Checkbox.io using the `htmlpublisher` plugin (the source of which we generate using the `istanbul-middleware` tool).
+
+## 2. Automated Commit Generation / Commit Fuzzer (iTrust)
 
 This milestone required us to perform testing and analysis using our Jenkins build server from the previous milestone.
 
-In order for Jenkins to run testing on the iTrust repository, we added the `GitHub` plugin to the iTrust job configuration as seen below:
+In order for Jenkins to run testing on the iTrust repository, we added the `git` plugin to the iTrust job configuration as seen below:
+
 ```
 scm:
   - git:
@@ -25,24 +34,27 @@ scm:
       wipe-workspace: true
 ```
 
-We used a local copy of the iTrust repository as the versions on github were being modified which were causing test failures and failing builds in our Jenkins server
+We used a local copy of the iTrust repository as the versions on GitHub were being modified, which was causing test failures and failing builds in our Jenkins server.
 
-In order for the Jenkins build to start automatically on commit, we had to ensure that the iTrust repository has a post-commit hook as displayed below
+In order for the Jenkins build to start automatically on commits, we had to ensure that the iTrust repository had a post-commit hook as displayed below.
+
 ```
 #!/bin/sh
 curl http://localhost:8081/git/notifyCommit?url=file:///home/{{ ansible_user }}/iTrust2-v1
 ```
 
-We also had to enable the polling of scm as part of the job configuration in order for the commit hook to register at the Jenkins url
+We also had to enable the polling of `scm` as part of the job configuration, in order for the commit hook to register at the Jenkins url.
+
 ```
 triggers:
   - pollscm:
       cron: ""
 ```
 
-After performing all the above steps, on every commit, the build would clone the repository, switch to the fuzzer branch and then start a build using `mvn clean test verify checkstyle:checkstyle`
+After performing all the above steps, on every commit, the build would clone the repository, switch to the `fuzzer` branch, and then start a build using `mvn clean test verify checkstyle:checkstyle`.
 
 After the build has executed successfully, we get the coverage information as part of the JaCoCo library. So we added the JaCoCo plugin to Jenkins and also added it to the job configuration for the iTrust repository.
+
 ```
 - jacoco:
     exec-pattern: '**/**.exec'
@@ -50,10 +62,6 @@ After the build has executed successfully, we get the coverage information as pa
     source-pattern: '**/src/main/java'
     update-build-status: false
 ```
-
-** add htmlpublisher plugin info
-
-## Automated Commit Generation - Commit fuzzer
 
 One of the challenges that we faced was the difference between `git reset` and `git revert`.
 `git reset` removes all the modifications done as per the latest commit and leaves no trace that the commit existed in the first place.
@@ -104,7 +112,7 @@ Our approach to fuzz the files is as follows:
 
 * If the compilation is successfull, we go ahead and add the files to the git working tree and commit them so that the build starts automatically. Otherwise, we reset the changes and fuzz a different set of 10 files.
 
-## Automated Test Generation - Checkbox.io
+## 3. Automated Test Generation (Checkbox.io)
 
 For autogenerating tests, we chose to use a test database. In our pipelining, we added the required MongoDB data to the site database to make the write heads for the API calls. We used the request module to mock the API calls. We used the esprima module to parse server.js file. The call expressions with property name 'get' and 'post' are recognized using esprima and are stored in separate arrays. After this, we have created mock json arguments to passed with get calls and the mock data that we need to pass with post calls. 
 
