@@ -41,9 +41,9 @@
         global: yes
       become: yes
 
-    - name: Start the FuzzerTool
+    - name: Start the FuzzerTool x100
       become: yes
-      shell: 'node fuzzerTool.js; sleep 30'
+      shell: 'node fuzzerTool.js; sleep 15'
       args:
         chdir: "/home/{{ ansible_user }}/FuzzerTool/"
       with_sequence: "count={{ num_runs }}"
