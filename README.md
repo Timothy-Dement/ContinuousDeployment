@@ -122,6 +122,7 @@ One of the challenges that we faced was the coverage for the branches that would
 
 ![Coverage Report for Checkbox](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/coverage%20report.png)
 
+
 Deatiled coverage reports can be seen here:
 * Coverage of server.js file can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/server_coverage.png)
 
@@ -134,6 +135,9 @@ Deatiled coverage reports can be seen here:
 * Coverage of the studyModel.js can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/study_model_coverage.png)
 
 * Coverage of the upload.js  can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/upload_coverage.png)
+
+To see all the details of coverage obtained by automated test case generation, go to this [folder](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/test%2Banalysis/test_generation/coverage)
+
 
 
 
