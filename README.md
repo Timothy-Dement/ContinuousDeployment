@@ -13,6 +13,13 @@
 
 ## 1. Coverage / Jenkins Support
 
+**RELEVANT FILES:**
+
+* [`playbooks/jenkins.yml`](playbooks/jenkins.yml)
+* [`provisioners/aws-jenkins.yml`](provisioners/aws-jenkins.yml`)
+* [`templates`](templates)
+* [`vars`](vars)
+
 The constraints of this milestone required us to customize our Jenkins server in ways that differed from the first milestone, which can be reviewed in the [`jenkins.yml`](playbooks/jenkins.yml) playbook and the first section of the screencast.
 
 Besides separating tasks specific to iTrust and Checkbox.io, we also needed to install an updated version of Node.js and npm, change the Jenkins port from 8080, and add several new plugins to Jenkins, among other minor changes.
