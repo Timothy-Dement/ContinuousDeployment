@@ -157,9 +157,6 @@ Detailed coverage reports can be seen here:
 
 To see all the details of coverage obtained by automated test case generation, go to this [folder](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/test%2Banalysis/test_generation/coverage)
 
-# Link to screencast:
+# Screencast
 
-[Screencast]()
-
-
-
+[![Milestone Two Screencast](https://img.youtube.com/vi/D37PnUXbMNw/0.jpg)](https://youtu.be/D37PnUXbMNw)
