@@ -140,7 +140,7 @@ To see all the details of coverage obtained by automated test case generation, g
 
 # Link to screencast:
 
-[Screencast].()
+[Screencast]()
 
 
 
