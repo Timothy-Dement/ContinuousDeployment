@@ -142,7 +142,7 @@ With these tests in place we received the following coverage:
 ![Coverage Report for Checkbox](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/coverage%20report.png)
 
 
-Deatiled coverage reports can be seen here:
+Detailed coverage reports can be seen here:
 * Coverage of server.js file can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/server_coverage.png)
 
 * Coverage of study.js file can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/study_coverage.png)
