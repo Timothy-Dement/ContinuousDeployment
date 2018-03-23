@@ -131,7 +131,7 @@ Deatiled coverage reports can be seen here:
 
 * Coverage of the create.js file can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/create_coverage.png)
 
-* Coverage of the studyModel.js can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/study_coverage.png)
+* Coverage of the studyModel.js can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/study_model_coverage.png)
 
 * Coverage of the upload.js  can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/upload_coverage.png)
 
