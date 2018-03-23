@@ -82,6 +82,7 @@ After the build has executed successfully, we get the coverage information as pa
 One of the challenges that we faced was the difference between `git reset` and `git revert`.
 `git reset` removes all the modifications done as per the latest commit and leaves no trace that the commit existed in the first place.
 However, `git revert` makes a new commit, and adds it to the git log.
+
 ```
 commit 82d77e6decff20376fe3e17feeb9cdbc7726277d
 Author: Sourabh Saha <sssaha2@ncsu.edu>
@@ -98,6 +99,7 @@ Date:   Sun Mar 18 17:55:54 2018 +0000
     test commit B1
 ```
 The problem was that this executed the post-commit hook as well, and we were getting alternate fuzzed and not-fuzzed builds. To solve this issue, we added a commit filter, in the post-commit hook, which checks the git log to see the commit message of the latest commit, and if the commit message has  `revert` in it, it ignores the commit.
+
 ```
 #!/bin/sh
 if  git log -1 | grep -q 'revert' > /dev/null; then
@@ -108,6 +110,7 @@ fi
 ```
 
 For the fuzzing operation, we used the following methods:
+
 * Swapping `<` with `>`
 
 * Swapping `!=` with `==`
@@ -129,6 +132,16 @@ Our approach to fuzz the files is as follows:
 * If the compilation is successfull, we go ahead and add the files to the git working tree and commit them so that the build starts automatically. Otherwise, we reset the changes and fuzz a different set of 10 files.
 
 ## 3. Automated Test Generation (Checkbox.io)
+
+**RELEVANT FILES:**
+
+* [`playbooks/checkbox.yml`](playbooks/checkbox.yml)
+* [`coverage.js`](templates/coverage.js)
+* [`generator.js`](templates/generator.js)
+* [`test.js`](test_generation/test.js)
+* [`studies.json`](templates/studies.json)
+* [`votes.json`](templates/votes.json)
+* [`coverage`](coverage)
 
 For autogenerating tests, we chose to use a test database. In our pipelining, we added the required MongoDB data to the site database to make the write heads for the API calls. We used the request module to mock the API calls. We used the esprima module to parse server.js file. The call expressions with property name 'get' and 'post' are recognized using esprima and are stored in separate arrays. After this, we have created mock json arguments to passed with get calls and the mock data that we need to pass with post calls. 
 
