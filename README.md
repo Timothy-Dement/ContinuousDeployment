@@ -122,6 +122,4 @@ One of the challenges that we faced was the coverage for the branches that would
 
 ![Coverage Report for Checkbox](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/coverage%20report.png)
 
-Coverage of the admin.js file , by line can be seen in the image below:
-
-![Coverage of admin.js](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/admin_coverage.png)
+Coverage of the admin.js file , by line can be seen [here](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/test%2Banalysis/test_generation/coverage/admin_coverage.png)
