@@ -28,6 +28,15 @@ Coverage was displayed in Jenkins for iTrust using the `jacoco` plugin (already 
 
 ## 2. Automated Commit Generation / Commit Fuzzer (iTrust)
 
+**RELEVANT FILES:**
+
+* [`playbooks/fuzzer.yml`](playbooks/fuzzer.yml)
+* [`fuzzer.js`](templates/fuzzer.js)
+* [`fuzzerTool.js`](templates/fuzzerTool.js)
+* [`testAnalysis.js`](templates/testAnalysis.js)
+* [`success.json`](fuzzing/success.json)
+* [`failure.json`](fuzzing/failure.json)
+
 This milestone required us to perform testing and analysis using our Jenkins build server from the previous milestone.
 
 In order for Jenkins to run testing on the iTrust repository, we added the `git` plugin to the iTrust job configuration as seen below:
