@@ -1,17 +1,18 @@
 # Pipeline Project
 
-| **Team Members** |
-| :--- |
-| Kanchan Bisht (kbisht) |
-| Priyanka Jain (pjain15) |
-| Sourabh Saha (sssaha2) |
-| Timothy Dement (tmdement) |
+| **Team Members** | **Contributions to Milestone** |
+| :--- | :--- |
+| Kanchan Bisht (kbisht) | Checkbox.io Test Generation&nbsp;&nbsp;/&nbsp;&nbsp;Checkbox.io Playbooks&nbsp;&nbsp;/&nbsp;&nbsp;Report |
+| Priyanka Jain (pjain15) | Checkbox.io Test Generation&nbsp;&nbsp;/&nbsp;&nbsp;Checkbox.io Playbooks&nbsp;&nbsp;/&nbsp;&nbsp;Report |
+| Sourabh Saha (sssaha2) | Jenkins Customization&nbsp;&nbsp;/&nbsp;&nbsp;iTrust Commit Automation&nbsp;&nbsp;/&nbsp;&nbsp;iTrust Test Prioritization Analysis&nbsp;&nbsp;/&nbsp;&nbsp;Report |
+| Timothy Dement (tmdement) | Checkbox.io Test Generation&nbsp;&nbsp;/&nbsp;&nbsp;iTrust Commit Fuzzer&nbsp;&nbsp;/&nbsp;&nbsp;Screencast&nbsp;&nbsp;/&nbsp;&nbsp;Report |
 
 [&#8592; MASTER BRANCH](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT)
 
 # Testing and Analysis Milestone
 
-## Coverage/Jenkins Support (Sourabh Saha and Timothy Dement)
+## Coverage/Jenkins Support
+
 This milestone required us to perform testing and analysis using our Jenkins build server from the previous milestone.
 
 In order for Jenkins to run testing on the iTrust repository, we added the `GitHub` plugin to the iTrust job configuration as seen below:
@@ -52,7 +53,7 @@ After the build has executed successfully, we get the coverage information as pa
 
 ** add htmlpublisher plugin info
 
-## Automated Commit Generation - Commit fuzzer (Sourabh Saha and Timothy Dement)
+## Automated Commit Generation - Commit fuzzer
 
 One of the challenges that we faced was the difference between `git reset` and `git revert`.
 `git reset` removes all the modifications done as per the latest commit and leaves no trace that the commit existed in the first place.
@@ -103,7 +104,7 @@ Our approach to fuzz the files is as follows:
 
 * If the compilation is successfull, we go ahead and add the files to the git working tree and commit them so that the build starts automatically. Otherwise, we reset the changes and fuzz a different set of 10 files.
 
-## Automated Test Generation - Checkbox.io (Priyanka Jain and Kanchan Bisht)
+## Automated Test Generation - Checkbox.io
 
 For autogenerating tests, we chose to use a test database. In our pipelining, we added the required MongoDB data to the site database to make the write heads for the API calls. We used the request module to mock the API calls. We used the esprima module to parse server.js file. The call expressions with property name 'get' and 'post' are recognized using esprima and are stored in separate arrays. After this, we have created mock json arguments to passed with get calls and the mock data that we need to pass with post calls. 
 
