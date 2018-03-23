@@ -1,0 +1,10 @@
+- project:
+    name: project
+    jobs:
+      - '{name}_job'
+           
+          #  post_build_script: |
+          #    sudo nodejs /home/ubuntu/JenkinsProvisioner/provisioners/aws-itrust.js
+          #    sudo chown ubuntu /home/ubuntu/itrust.key
+          #    sudo sleep 30
+          #    sudo ansible-playbook /home/ubuntu/JenkinsProvisioner/playbooks/itrust.yml -i /home/ubuntu/inventory-itrust

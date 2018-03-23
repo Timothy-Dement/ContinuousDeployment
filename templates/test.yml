@@ -1,0 +1,76 @@
+- job-template:
+    name: '{name}_checkbox_job'
+    description: 'Automatically generated test'
+    project-type: freestyle
+    builders:
+      - shell: |
+             rm -rf *
+             cp -r /home/{{ ansible_user }}/checkbox.io .
+             cd checkbox.io/server-side/site/
+             node generator.js
+             node test.js
+             wget http://localhost:8888/coverage/download
+             unzip download
+    publishers:
+      - html-publisher:
+          name: 'coverage report'
+          dir: 'checkbox.io/server-side/site/lcov-report'
+          files: "index.html"
+
+- job-template:
+    name: '{name}_itrust_job'
+    description: 'Automatically generated test'
+    project-type: freestyle
+    scm:
+      - git:
+          url: file:///home/{{ ansible_user }}/iTrust2-v1
+          branches:
+            - fuzzer
+          wipe-workspace: true
+    triggers:
+      - pollscm:
+          cron: ""
+    builders:
+      - shell: |
+             cd iTrust2/
+             cp src/main/java/db.properties.template src/main/java/db.properties
+             cp src/main/resources/hibernate.properties.template src/main/resources/hibernate.properties
+             cp  src/main/java/email.properties.template src/main/java/email.properties
+             sed -i -e 's/hibernate.connection.password = /hibernate.connection.password = root/g' src/main/resources/hibernate.properties
+             sed -i -e 's/password/password root/g' src/main/java/db.properties
+             mvn clean test verify checkstyle:checkstyle
+    publishers:
+      - jacoco:
+          exec-pattern: '**/**.exec'
+          class-pattern: '**/classes'
+          source-pattern: '**/src/main/java'
+          update-build-status: false
+          inclusion-pattern: ''
+          exclusion-pattern: ''
+          targets:
+            - instruction:
+                healthy: 0
+                unhealthy: 0
+            - branch:
+                healthy: 0
+                unhealthy: 0
+            - complexity:
+                healthy: 0
+                unhealthy: 0
+            - line:
+                healthy: 0
+                unhealthy: 0
+            - method:
+                healthy: 0
+                unhealthy: 0
+            - class:
+                healthy: 0
+                unhealthy: 0
+      - archive:
+          artifacts: 'iTrust2/target/surefire-reports/*.xml'
+
+- job-group:
+    name: '{name}_job'
+    jobs:
+      - '{name}_checkbox_job'
+      - '{name}_itrust_job'
