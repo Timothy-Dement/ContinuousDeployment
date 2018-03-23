@@ -1,0 +1,122 @@
+[
+  {
+    "test": "testPersonnelForm",
+    "time": 0
+  },
+  {
+    "test": "testEqualsAndProperties",
+    "time": 0
+  },
+  {
+    "test": "testPatientDateOfDeath",
+    "time": 0.00002
+  },
+  {
+    "test": "testGetNonExistentPersonnel",
+    "time": 0.00005
+  },
+  {
+    "test": "testCreateDomainObject",
+    "time": 0.00007000000000000001
+  },
+  {
+    "test": "testInvalidCodes",
+    "time": 0.00017999999999999998
+  },
+  {
+    "test": "testFieldValidation",
+    "time": 0.0003
+  },
+  {
+    "test": "testPatientAsPatient",
+    "time": 0.00077
+  },
+  {
+    "test": "testGetNonExistentHospital",
+    "time": 0.0014099999999999998
+  },
+  {
+    "test": "testCodeAPI",
+    "time": 0.0015900000000000003
+  },
+  {
+    "test": "testDeleteNonExistentOfficeVisit",
+    "time": 0.0016300000000000002
+  },
+  {
+    "test": "testGetNonExistentUser",
+    "time": 0.0022099999999999997
+  },
+  {
+    "test": "testIPLockouts",
+    "time": 0.00247
+  },
+  {
+    "test": "testHospitalAPI",
+    "time": 0.00615
+  },
+  {
+    "test": "testUserLockouts",
+    "time": 0.0071200000000000005
+  },
+  {
+    "test": "testAppointmentRequestAPI",
+    "time": 0.00835
+  },
+  {
+    "test": "testPersonnelAPI",
+    "time": 0.011099999999999999
+  },
+  {
+    "test": "testUserAPI",
+    "time": 0.01368
+  },
+  {
+    "test": "testPatientAPI",
+    "time": 0.020589999999999997
+  },
+  {
+    "test": "testPasswordChangeForm",
+    "time": 0.02166
+  },
+  {
+    "test": "testInvalidPasswordChanges",
+    "time": 0.02839
+  },
+  {
+    "test": "testValidPasswordChanges",
+    "time": 0.02848
+  },
+  {
+    "test": "testDrugAPI",
+    "time": 0.037809999999999976
+  },
+  {
+    "test": "testPrescriptionAPI",
+    "time": 0.03946999999999999
+  },
+  {
+    "test": "testPasswordReset",
+    "time": 0.04458
+  },
+  {
+    "test": "testDiagnoses",
+    "time": 0.06122
+  },
+  {
+    "test": "testLogEntryAPI",
+    "time": 0.13539
+  },
+  {
+    "test": "testOfficeVisitAPI",
+    "time": 0.14703999999999995
+  },
+  {
+    "test": "testPreScheduledOfficeVisit",
+    "time": 0.14943
+  },
+  {
+    "test": "testLogging",
+    "time": 4.7933200000000005
+  }
+]
