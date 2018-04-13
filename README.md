@@ -44,7 +44,7 @@ The provisioning and configuration code for the Jenkins server has remained larg
 
 	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/5a72b410b237e300dabdf7b414c31e9bd6af3b2f/playbooks/jenkins.yml#L289-L297)
 
-When the commands `git push checkbox master` and `git push itrust master` are run, the respective `post-receive` hooks provision and configure the `checkbox.io` and `iTrust2-v1` projects, as demonstrated in the screencast.
+When the commands `git push checkbox master` and `git push itrust master` are run, the respective `post-receive` hooks provision and configure the `checkbox.io` and `iTrust2-v1` projects, as demonstrated in the **Screencast**.
 
 ## Infrastructure Upgrade
 
