@@ -9,8 +9,6 @@
 
 [&#8592; MASTER BRANCH](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT)
 
----
-
 # Deployment Milestone
 
 ## Basic Deployment
@@ -30,7 +28,7 @@ The provisioning and configuration code for the Jenkins server has remained larg
 
 * Copies of the `checkbox.io`, `iTrust2-v1`, `iTrust2-v2`, and `JenkinsDeploy` projects are cloned to the home directory of the Jenkins server. Packages for the `JenkinsDeploy` project are installed.
 
-* A `deploy` directory structure is created following the structure of the workshop. It contains four sub-directories, `checkbox.git`, `checkbox-www`, `itrust.git`, and `itrust.www`, and bare git repositories are initializes in the `checkbox.git` and `itrust.git` sub-directories.
+* A `deploy` directory structure is created following the structure of the workshop. It contains four sub-directories, `checkbox.git`, `checkbox-www`, `itrust.git`, and `itrust-www`, and bare git repositories are initializes in the `checkbox.git` and `itrust.git` sub-directories.
 
 * Post-receive files that provision and configure the `checkbox.io` and `iTrust2-v1` projects are copied to the `hooks` directories of the respective git repositories.
 
