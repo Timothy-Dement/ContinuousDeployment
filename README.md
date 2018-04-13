@@ -20,7 +20,7 @@
 * [`templates/checkbox-post-receive`](templates/checkbox-post-receive)
 * [`templates/itrust-post-receive`](templates/itrust-post-receive)
 
--
+--
 
 The provisioning and configuration code for the Jenkins server has remained largely the same as that of the last milestone, with a few notable exceptions in the `jenkins.yml` playbook:
 
