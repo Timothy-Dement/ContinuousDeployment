@@ -76,23 +76,23 @@ The provisioning and configuration of the `iTrust` database and application serv
 
 * When the `iTrust` database server is provisioned, its IP address is saved to the `vars/main.yml` file to be used later when configuring the five `iTrust` application servers.
 
-	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/JenkinsDeploy/blob/3dd3b4509bfaf576ce52488189522726a4fd3157/provisioners/aws-itrust-database.js#L192-L204)
+	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/3510a9ca4ac6072060ad6d8d7d97fcf6c5680196/provisioners/aws-itrust-database.js#L192-L204)
 
 * When the `iTrust` database server is configured, a `my.cnf` file is copied to the database server that updates the `bind-address` and `skip-grant-tables` options.
 
-	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/JenkinsDeploy/blob/3dd3b4509bfaf576ce52488189522726a4fd3157/templates/my.cnf#L1-L3)
+	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/3510a9ca4ac6072060ad6d8d7d97fcf6c5680196/templates/my.cnf#L1-L3)
 	
 * When the `iTrust` database server is configured, a new database user is created that can access the database from IP addresses other than `localhost`.
 
-	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/JenkinsDeploy/blob/3dd3b4509bfaf576ce52488189522726a4fd3157/playbooks/itrust-database.yml#L99-L107)
+	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/3510a9ca4ac6072060ad6d8d7d97fcf6c5680196/playbooks/itrust-database.yml#L99-L107)
 	
 * When the five `iTrust` application servers are provisioned with the `itrust-cluster.sh` script, their IP addresses are all saved to the `itrust-cluster-inventory` file.
 
-	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/JenkinsDeploy/blob/3dd3b4509bfaf576ce52488189522726a4fd3157/provisioners/aws-itrust-alpha.js#L184-L218)
+	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/3510a9ca4ac6072060ad6d8d7d97fcf6c5680196/provisioners/aws-itrust-alpha.js#L184-L218)
 	
 * When the five `iTrust` application servers are configured, the utilize the Ansible templates for `db.properties` and `hibernate.properties` to point to the common `iTrust` database server. This is possible due to the IP address of the `iTrust` database server being saved to the `vars/main.yml` file when it was provisioned.
 
-	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/JenkinsDeploy/blob/3dd3b4509bfaf576ce52488189522726a4fd3157/playbooks/itrust-cluster.yml#L40-L53)
+	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/3510a9ca4ac6072060ad6d8d7d97fcf6c5680196/playbooks/itrust-cluster.yml#L40-L53)
 	
 When run, the `monitor.js` tool first pulls the IP addresses of the five `iTrust` application servers from the `itrust-cluster-inventory` file. It then begins polling the appropriate endpoints every ten seconds, outputting the results.
 
