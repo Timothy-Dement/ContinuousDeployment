@@ -1,17 +1,17 @@
 # Pipeline Project
 
 | **Team Member** | **Milestone Contribution** |
-| :--- | :--- |
-| Kanchan Bisht (kbisht) | ... |
-| Priyanka Jain (pjain15) | ... |
-| Sourabh Saha (sssaha2) | ... |
-| Timothy Dement (tmdement) | Jenkins Updates</br>Basic Deployment</br>Rolling Update<br/>Screencast</br> |
+| :---: | :---: |
+| Kanchan Bisht ( *kbisht* ) | Canary Release |
+| Priyanka Jain ( *pjain15* ) | Canary Release |
+| Sourabh Saha ( *sssaha2* ) | Infrastructure Upgrade |
+| Timothy Dement ( *tmdement* ) | Basic Deployment</br>Rolling Update |
 
 [&#8592; MASTER BRANCH](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT)
 
 # Deployment Milestone
 
-## Basic Deployment
+## 1. Basic Deployment
 
 ***Relevant Files:***
 
@@ -44,13 +44,13 @@ The provisioning and configuration code for the Jenkins server has remained larg
 
 	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/5a72b410b237e300dabdf7b414c31e9bd6af3b2f/playbooks/jenkins.yml#L289-L297)
 
-When the commands `git push checkbox master` and `git push itrust master` are run, the respective `post-receive` hooks provision and configure the `checkbox.io` and `iTrust2-v1` projects, as demonstrated in the **Screencast**.
+When the commands `git push checkbox master` and `git push itrust master` are run, the respective `post-receive` hooks provision and configure the `checkbox.io` and `iTrust2-v1` projects, as demonstrated in the [**Screencast**](#screencast).
 
-## Infrastructure Upgrade
+## 2. Infrastructure Upgrade
 
-## Canary Release
+## 3. Canary Release
 
-## Rolling Update
+## 4. Rolling Update
 
 ***Relevant Files***:
 
@@ -96,16 +96,36 @@ The provisioning and configuration of the `iTrust` database and application serv
 	
 When run, the `monitor.js` tool first pulls the IP addresses of the five `iTrust` application servers from the `itrust-cluster-inventory` file. It then begins polling the appropriate endpoints every ten seconds, outputting the results.
 
-The `update-itrust-cluster.yml` playbook utilizes Ansible's `serial` feature to affect only one of the five `iTrust` application servers at a time. It first stops the running application, then removes the old `v1` source code and copies the new `v2` source code before bringing the application back online. The rolling update process is demonstrated in the **Screencast**.
+The `update-itrust-cluster.yml` playbook utilizes Ansible's `serial` feature to affect only one of the five `iTrust` application servers at a time. It first stops the running application, then removes the old `v1` source code and copies the new `v2` source code before bringing the application back online. The rolling update process is demonstrated in the [**Screencast**](#screencast).
 
 ## Screencast
 
-<!---
+**NOTE TO TEAMMATES:**
 
-Format for YouTube Link in Markdown:
+This is the format for the YouTube links I have been using:
 
 ```
-[![Milestone Two Screencast](https://img.youtube.com/vi/D37PnUXbMNw/0.jpg)](https://youtu.be/D37PnUXbMNw)
+[![Milestone Two Screencast](https://img.youtube.com/vi/D37PnUXbMNw/0.jpg)]
+(https://youtu.be/D37PnUXbMNw)
 ```
 
---->
+Just replace `Milestone Two Screencast` with whatever title you'd like, and replace the two instances of `D37PnUXbMNw` with the ID of your YouTube video.
+
+---
+
+For this milestone, we divided the screencasts between team members according to the tasks they worked on.
+
+The following screencast demonstrates the **Basic Deployment** and **Rolling Update** tasks:
+
+[![image-title](image-link)]
+(video-link)
+
+The following screencast demonstrates the **Infrastructure Upgrade** task:
+
+[![image-title](image-link)]
+(video-link)
+
+The following screencast demonstrates the **Canary Release** task:
+
+[![image-title](image-link)]
+(video-link)
