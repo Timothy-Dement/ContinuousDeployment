@@ -160,7 +160,7 @@ The Redis flagserver's main intention is to have key-value pairs mirrored among 
 
 The canary release task consists of the following parts:
 
-1. Provisioning and configuring the three AWS EC2 instances. For this we execute the playbook setup_servers.yml.
+1. Provisioning and configuring the three AWS EC2 instances. For this we execute the playbook setup_servers.yml. The inventory file will be created and will be updated as the tasks in the playbook progress.
 One instance would contain the proxy server for load balancing and the mongoDB database instance. 
 
 [&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L1-L71)
@@ -172,6 +172,16 @@ The second ec2 instance would contain the stable version of checkbox.io applicat
 The third instance would be the canary server containing the new version of checkbox.io application. 
 
 [&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L114-L153)
+
+After setting up the stable and canary servers, their respective IPs are passed to the proxy server to enable the load balancing for these. The proxy server is then provisioned using the proxy role.
+
+[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L156-L176)
+
+Both the stable as well canary server make use of the mongoDB instance residing in the proxy server.
+
+2. We then log in to the proxy server and execute infrastructure.js file which contains the algorithm for balancing the load or incoming network traffic. The load balancer first checks if the canary server is functioning. If it is up and running, then we check the value of the count variable that stores the number of times the application is accessed. This value is compared and accordingly 60% of the requests are routed to the stable server and 40% to the canary server. But, if the canary server is down or not functioning, then an alert is raised and 100% traffic is routed to the stable server. To check this, you can stop the canary server from the ec2 management console.
+
+[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/roles/proxy/templates/infrastructure.js.j2)
 
 ## 4. Rolling Update
 
