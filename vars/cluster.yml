@@ -1,0 +1,3 @@
+master_ip_address: lookup('env','MASTER_IP_ADDRESS')
+token: lookup('env','CLUSTER_TOKEN')
+# example "858698.51e1418c0490485b"

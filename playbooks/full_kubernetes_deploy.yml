@@ -1,0 +1,304 @@
+- name: Setup Checkbox
+
+  hosts: kubernetes-common
+
+  become: yes
+
+  gather_facts: false
+
+  environment:
+
+    MONGO_PORT: "3002"
+    MONGO_IP: "localhost"
+    MONGO_USER: "{{ lookup('env', 'MONGO_USER') }}"
+    MONGO_PASSWORD: "{{ lookup('env', 'MONGO_PASSWORD') }}"
+
+  tasks:
+    - name: Update nodejs version
+      shell: 'curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -'
+
+    - name: Update nodejs version pt 2
+      apt:
+        name: nodejs
+
+    - name: Install mongodb pt 1
+      shell: "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927"
+
+    - name: Install mongodb pt 2
+      shell: "echo \"deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list"
+
+    - name: Update update_cache
+      shell: apt-get update
+
+    - name: Install mongodb pt 3
+      apt:
+        name: mongodb-org
+
+    - name: Start MongoDB service
+      shell: "service mongod start"
+
+    - name: Installing Python-Pip
+      apt:
+        pkg: python-pip
+        state: latest
+
+    # - name: Install nginx
+    #   become: yes
+    #   apt:
+    #     pkg: nginx
+    #     state: latest
+    #     update_cache: yes
+
+    - name: Installing Python pip 3
+      apt:
+        pkg: python3-pip
+        state: latest
+    - name: Install the latest pymongo package
+      pip: name=pymongo state=latest use_mirrors=no
+
+    - name: Update update_cache
+      shell: apt-get update
+
+    - name: Intsall pymongo
+      pip:
+        name: pymongo
+        state: present
+
+    # - name: Clone Checkbox
+    #   git:
+    #     repo: "https://sssaha2:casper234@github.ncsu.edu/tmdement/checkbox.io"
+    #     dest: /home/{{ ansible_user }}/checkbox.io
+    #     force: yes
+    #   become: no
+    #
+    #
+    # - name: update location of public_html into default
+    #   become: no
+    #   replace:
+    #     dest: /home/{{ansible_ssh_user}}/checkbox.io/local-conf/default
+    #     regexp: '/Users/gameweld/bitbucket/checkbox.io/checkbox.io/public_html'
+    #     replace: '/usr/src/app/public_html'
+
+    # - name: Copy default to different location
+    #   shell: "cp /home/{{ ansible_user }}/checkbox.io/local-conf/default /etc/nginx/sites-available/default"
+    #
+    # - name: Copy nginx to diferent location
+    #   shell: "cp /home/{{ ansible_user }}/checkbox.io/local-conf/nginx.conf /etc/nginx/nginx.conf"
+
+    # - name: Copy the relevant files
+    #   become: no
+    #   template:
+    #     src: "{{ item }}"
+    #     dest: "/home/{{ ansible_user }}/checkbox.io/server-side/site/"
+    #     force: yes
+    #   with_items:
+    #     - /Users/sourabhsaha/Documents/courses/devops/DevOpsProject/SharedFolder/JenkinsTestAnalysis/templates/package.json
+    #     - /Users/sourabhsaha/Documents/courses/devops/DevOpsProject/SharedFolder/JenkinsTestAnalysis/templates/server.js
+
+    - name: Create MongoDb user
+      mongodb_user:
+        database: "admin"
+        name: "admin"
+        password: "root"
+        roles: readWriteAnyDatabase,dbAdmin,userAdminAnyDatabase
+
+    - name: Export MONGO_USER environment variable
+      shell: "echo \"export MONGO_USER={{ lookup('env', 'MONGO_USER') }}\" >> /etc/environment"
+
+    - name: Export MONGO_PORT environment variable
+      shell: "echo \"export MONGO_PORT=3002\" >> /etc/environment"
+
+    - name: Export MONGO_PASS environment variable
+      shell: "echo \"export MONGO_PASSWORD={{ lookup('env', 'MONGO_PASSWORD') }}\" >> /etc/environment"
+
+    - name: Export MAIL_SMTP environment variable
+      shell: "echo \"export MAIL_SMTP=smtp.gmail.com\" >> /etc/environment"
+
+    - name: Export MAIL_USER environment variable
+      shell: "echo \"export MAIL_USER={{ lookup('env', 'MAIL_USER') }}\" >> /etc/environment"
+
+    - name: Export MAIL_PASSWORD environment variable
+      shell: "echo \"export MAIL_PASSWORD={{ lookup('env', 'MAIL_PASSWORD') }}\" >> /etc/environment"
+
+    - name: Export MONGO_IP environment variable
+      shell: "echo \"export MONGO_IP=localhost\" >> /etc/environment"
+
+    # - name: install packages
+    #   npm:
+    #     path: /home/{{ ansible_user }}/checkbox.io/server-side/site
+    #     state: latest
+    #
+    # - name: update location of public_html into default
+    #   replace:
+    #     dest: /home/{{ansible_ssh_user}}/checkbox.io/local-conf/default
+    #     regexp: '/Users/gameweld/bitbucket/checkbox.io/checkbox.io/public_html'
+    #     replace: '/home/{{ ansible_user }}/checkbox.io/public_html'
+
+    # - name: Add the votes data into the mongo db database
+    #   shell: "mongoimport --db site --collection votes --drop --file votes.json"
+    #   args:
+    #     chdir: "/home/{{ ansible_user }}/checkbox.io/server-side/site"
+    #
+    # - name: Add the studies data into the mongo db database
+    #   shell: "mongoimport --db site --collection studies --drop --file studies.json"
+    #   args:
+    #     chdir: "/home/{{ ansible_user }}/checkbox.io/server-side/site"
+
+    # - name: Remove forever
+    #   npm: name=forever global=yes state=absent
+    #
+    # - name: Install checkbox.io npm packages
+    #   become: no
+    #   npm:
+    #     path: "/home/{{ ansible_user }}/checkbox.io/server-side/site"
+    #
+    # # - name: restart nginx
+    #   shell: "service restart nginx"
+    #
+    # - name: Update cache
+    #   shell: "apt-get update"
+    #
+    # - name: Install related libraries
+    #   shell: "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common"
+    #
+    # - name: Install docker
+    #   apt:
+    #     name: docker.io
+
+
+
+- name: Setup Kubernetes
+  hosts: kubernetes-common
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Update cache
+      shell: "apt-get update"
+
+    - name: Install related libraries
+      shell: "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common"
+
+    - name: Install docker
+      apt:
+        name: docker.io
+
+    - name: Update cache
+      shell: "apt-get update && apt-get install -y apt-transport-https"
+
+    - name: Add repo
+      shell: "echo \"deb http://apt.kubernetes.io/ kubernetes-xenial main\" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list"
+
+    - name: Update cache
+      shell: "apt-get update"
+
+    - name: Install kubernetes system
+      apt:
+        name: "{{ item }}"
+        allow_unauthenticated: yes
+      with_items:
+        - kubelet
+        - kubeadm
+        - kubernetes-cni
+
+
+
+- name: Setup Kubernetes master
+
+  hosts: kubernetes-master
+
+  become: yes
+
+  gather_facts: false
+
+  vars_files:
+    - /Users/sourabhsaha/Documents/courses/devops/DevOpsProject/SharedFolder/JenkinsTestAnalysis/vars/cluster.yml
+
+  tasks:
+    - name: Copy the relevant files 1
+      template:
+        src: "/Users/sourabhsaha/Documents/courses/devops/DevOpsProject/SharedFolder/JenkinsTestAnalysis/templates/10-kubeadm.conf"
+        dest: "/etc/systemd/system/kubelet.service.d/10-kubeadm.conf"
+        force: yes
+
+    - name: Copy the relevant files 2
+      template:
+        src: "/Users/sourabhsaha/Documents/courses/devops/DevOpsProject/SharedFolder/JenkinsTestAnalysis/templates/deployment-config.yml"
+        dest: "/home/deployment-config.yml"
+        force: yes
+
+    - name: Restart daemon-reload
+      shell: "systemctl daemon-reload"
+
+    - name: Restart kubelet
+      shell: "systemctl restart kubelet"
+
+    - name: Initialize the cluster
+      shell: "sleep 10; kubeadm init --token {{ token }}"
+      register: result
+
+    - debug:
+        var: result.stdout_lines
+
+    - name: Export env variable
+      shell: "echo \"export KUBECONFIG=/etc/kubernetes/admin.conf\" >> /root/.bashrc"
+
+    - name: Add overlay network
+      shell: "export KUBECONFIG=/etc/kubernetes/admin.conf && kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')\""
+      args:
+          chdir: /root/
+
+
+- name: Setup kubernetes node 1
+  hosts: kubernetes-node1
+  become: true
+  vars_files:
+    - /Users/sourabhsaha/Documents/courses/devops/DevOpsProject/SharedFolder/JenkinsTestAnalysis/vars/cluster.yml
+  gather_facts: false
+  tasks:
+    - debug:
+        var: token
+      run_once: true
+    - debug:
+        var: master_ip_address
+      run_once: true
+    - name: Join nodes to cluster
+      command: "kubeadm join --token {{ token }} --discovery-token-unsafe-skip-ca-verification {{ master_ip_address }}:6443"
+      register: node_join
+      ignore_errors: true
+    - debug:
+        var: node_join.stdout_lines
+
+
+- name: Setup kubernetes node 2
+  hosts: kubernetes-node2
+  become: true
+  vars_files:
+    - /Users/sourabhsaha/Documents/courses/devops/DevOpsProject/SharedFolder/JenkinsTestAnalysis/vars/cluster.yml
+  gather_facts: false
+  tasks:
+    - debug:
+        var: token
+      run_once: true
+    - debug:
+        var: master_ip_address
+      run_once: true
+    - name: Join nodes to cluster
+      command: "kubeadm join --token {{ token }} --discovery-token-unsafe-skip-ca-verification {{ master_ip_address }}:6443"
+      register: node_join
+      ignore_errors: true
+    - debug:
+        var: node_join.stdout_lines
+
+
+- name: Start the container
+
+  hosts: kubernetes-master
+
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Start the app
+      shell: "sleep 120; export KUBECONFIG=/etc/kubernetes/admin.conf && kubectl apply -f deployment-config.yml"
+      args:
+          chdir: /home/

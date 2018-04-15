@@ -81,19 +81,19 @@ The provisioning and configuration of the `iTrust` database and application serv
 * When the `iTrust` database server is configured, a `my.cnf` file is copied to the database server that updates the `bind-address` and `skip-grant-tables` options.
 
 	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/3510a9ca4ac6072060ad6d8d7d97fcf6c5680196/templates/my.cnf#L1-L3)
-	
+
 * When the `iTrust` database server is configured, a new database user is created that can access the database from IP addresses other than `localhost`.
 
 	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/3510a9ca4ac6072060ad6d8d7d97fcf6c5680196/playbooks/itrust-database.yml#L99-L107)
-	
+
 * When the five `iTrust` application servers are provisioned with the `itrust-cluster.sh` script, their IP addresses are all saved to the `itrust-cluster-inventory` file.
 
 	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/3510a9ca4ac6072060ad6d8d7d97fcf6c5680196/provisioners/aws-itrust-alpha.js#L184-L218)
-	
+
 * When the five `iTrust` application servers are configured, the utilize the Ansible templates for `db.properties` and `hibernate.properties` to point to the common `iTrust` database server. This is possible due to the IP address of the `iTrust` database server being saved to the `vars/main.yml` file when it was provisioned.
 
 	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/3510a9ca4ac6072060ad6d8d7d97fcf6c5680196/playbooks/itrust-cluster.yml#L40-L53)
-	
+
 When run, the `monitor.js` tool first pulls the IP addresses of the five `iTrust` application servers from the `itrust-cluster-inventory` file. It then begins polling the appropriate endpoints every ten seconds, outputting the results.
 
 The `update-itrust-cluster.yml` playbook utilizes Ansible's `serial` feature to affect only one of the five `iTrust` application servers at a time. It first stops the running application, then removes the old `v1` source code and copies the new `v2` source code before bringing the application back online. The rolling update process is demonstrated in the [**Screencast**](#screencast).
@@ -122,11 +122,9 @@ The following screencast demonstrates the **Basic Deployment** and **Rolling Upd
 
 The following screencast demonstrates the **Infrastructure Upgrade** task:
 
-[![image-title](image-link)]
-(video-link)
+[![Infrastructure upgrade](https://img.youtube.com/vi/6z6wJqsfLiQ/0.jpg)](https://youtu.be/6z6wJqsfLiQ)
 
 The following screencast demonstrates the **Canary Release** task:
 
 
-[![Milestone One Screencast](https://img.youtube.com/vi/7oxKxBvVgy4/0.jpg)](https://youtu.be/7oxKxBvVgy4)
-
+[![Canary release](https://img.youtube.com/vi/7oxKxBvVgy4/0.jpg)](https://youtu.be/7oxKxBvVgy4)

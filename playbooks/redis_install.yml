@@ -1,0 +1,55 @@
+- name: Setup Redis
+  hosts: redis-common
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: Add redis repository
+      apt_repository:
+        repo: ppa:chris-lea/redis-server
+
+    - name: Update cache
+      shell: "apt-get update"
+
+    - name: Install Redis server
+      apt:
+        name: redis-server
+
+- name: Setup Redis master
+  hosts: redis-master
+  become: yes
+  gather_facts: false
+
+  tasks:
+    - name: Open redis to external comms
+      lineinfile:
+        dest: /etc/redis/redis.conf
+        regexp: 'bind 127.0.0.1'
+        line: '# bind 127.0.0.1'
+
+    - name: Disable protected mode
+      lineinfile:
+        dest: /etc/redis/redis.conf
+        regexp: 'protected-mode yes'
+        line: 'protected-mode no'
+
+    - name: Restart Redis
+      shell: "systemctl restart redis-server.service"
+
+    - name: Open port in firewall
+      shell: "ufw allow 6379"
+
+- name: Setup Redis slaves
+  hosts: redis-slave
+  become: yes
+  gather_facts: false
+  vars_files:
+    - /Users/sourabhsaha/Documents/courses/devops/DevOpsProject/SharedFolder/JenkinsTestAnalysis/vars/cluster.yml
+  tasks:
+    - name: Start slave mode
+      lineinfile:
+        dest: /etc/redis/redis.conf
+        regexp: '# slaveof <masterip> <masterport>'
+        line: 'slaveof {{ master_ip_address }} 6379'
+
+    - name: Restart Redis
+      shell: "systemctl restart redis-server.service"
