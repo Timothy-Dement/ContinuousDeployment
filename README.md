@@ -147,14 +147,31 @@ The Redis flagserver's main intention is to have key-value pairs mirrored among 
 
 ***Relevant Files***:
 
-* ['canary-release/aws.yml'](canary-release/aws.yml)
-* ['canary-release/setup_servers.yml'](canary-release/setup_servers.yml)
-* ['canary-release/roles/checkbox/tasks/main.yml'](canary-release/roles/checkbox/tasks/main.yml)
-* ['canary-release/roles/mongodb/tasks/main.yml'](canary-release/roles/mongodb/tasks/main.yml)
-* ['canary-release/roles/proxy/tasks/main.yml'](canary-release/roles/proxy/tasks/main.yml)
-* ['canary-release/roles/proxy/templates/infrastructure.js.j2'](canary-release/roles/proxy/templates/infrastructure.js.j2)
-* ['canary-release/roles/proxy/templates/package.json'](canary-release/roles/proxy/templates/package.json)
-* ['canary-release/roles/proxy/templates/redis.cnf.j2'](canary-release/roles/proxy/templates/redis.cnf.j2)
+* [canary-release/setup_servers.yml](canary-release/setup_servers.yml)
+* [canary-release/aws.yml](canary-release/aws.yml)
+* [canary-release/roles/checkbox/tasks/main.yml](canary-release/roles/checkbox/tasks/main.yml)
+* [canary-release/roles/mongodb/tasks/main.yml](canary-release/roles/mongodb/tasks/main.yml)
+* [canary-release/roles/proxy/tasks/main.yml](canary-release/roles/proxy/tasks/main.yml)
+* [canary-release/roles/proxy/templates/infrastructure.js.j2](canary-release/roles/proxy/templates/infrastructure.js.j2)
+* [canary-release/roles/proxy/templates/package.json](canary-release/roles/proxy/templates/package.json)
+* [canary-release/roles/proxy/templates/redis.cnf.j2](canary-release/roles/proxy/templates/redis.cnf.j2)
+
+---
+
+The canary release task consists of the following parts:
+
+1. Provisioning and configuring the three AWS EC2 instances. For this we execute the playbook setup_servers.yml.
+One instance would contain the proxy server for load balancing and the mongoDB database instance. 
+
+[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L1-L71)
+
+The second ec2 instance would contain the stable version of checkbox.io application. 
+
+[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L73-L112)
+
+The third instance would be the canary server containing the new version of checkbox.io application. 
+
+[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L114-L153)
 
 ## 4. Rolling Update
 
