@@ -210,8 +210,7 @@ For this milestone, we divided the screencasts between team members according to
 
 The following screencast demonstrates the **Basic Deployment** and **Rolling Update** tasks:
 
-[![Basic Deployment and Rolling Upgrade](https://img.youtube.com/vi/QVGiU19SLeU/0.jpg)]
-(https://youtu.be/QVGiU19SLeU)
+[![Basic Deployment and Rolling Upgrade](https://img.youtube.com/vi/QVGiU19SLeU/0.jpg)](https://youtu.be/QVGiU19SLeU)
 
 The following screencast demonstrates the **Infrastructure Upgrade** task:
 
