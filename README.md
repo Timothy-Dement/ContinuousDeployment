@@ -48,6 +48,21 @@ When the commands `git push checkbox master` and `git push itrust master` are ru
 
 ## 2. Infrastructure Upgrade
 
+***Relevant Files:***
+
+* [`provisioners/do-kubernetes.js`](provisioners/do-kubernetes.js)
+* [`playbooks/full_kubernetes_deploy.yml`](playbooks/full_kubernetes_deploy.yml)
+* [`playbooks/redis_install.yml`](playbooks/redis_install.yml)
+* [`templates/10-kubeadm.conf`](templates/10-kubeadm.conf)
+* [`templates/deployment-config.yml`](templates/deployment-config.yml)
+* [`templates/Dockerfile`](templates/Dockerfile)
+* [`templates/start.sh`](templates/start.sh)
+* [`templates/server.js`](templates/server.js)
+* [`templates/package.json`](templates/package.json)
+
+---
+
+
 ## 3. Canary Release
 
 ## 4. Rolling Update
