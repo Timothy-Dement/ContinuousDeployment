@@ -1,0 +1,178 @@
+# Creating AWS instances and configuring them
+---
+- name: Proxy Server
+  hosts: localhost
+  user: vagrant
+  vars:
+    group_name: proxy
+  tasks:
+
+  - name : Install pip
+    apt: pkg=python-pip update_cache=yes state=present
+    become: true
+  
+  - name: Install boto and boto3
+    pip:
+      name: "{{ item }}"
+    with_items:
+      - boto
+      - boto3
+
+  - name: Check if inventory file exists
+    stat:
+      path: /home/{{ ansible_user }}/inventory
+    register: inventory_file
+
+  - name: Delete inventory file if exists
+    file:
+      state: absent
+      path: "/home/{{ ansible_user }}/inventory"
+    when: inventory_file.stat.exists == True
+
+  - name: Create inventory file
+    copy:
+      content: "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
+      dest: /home/{{ ansible_user }}/inventory
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: 0600
+
+  - name: Modify ansible.cnf in localhost
+    replace:
+      path: /etc/ansible/ansible.cfg
+      regexp: '.*host_key_checking.*'
+      replace: 'host_key_checking = no'
+      backup: no
+
+  - name : Provision aws instance
+    include: aws.yml
+    vars:
+      instance_type: t2.micro
+      image: ami-965e6bf3
+      region: us-east-2
+      subnet: subnet-bbb938d2
+      keyname: aws-key
+      aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+      aws_secret_key: "{{lookup('env', 'AWS_SECRET_ACCESS_KEY')}}"
+  
+  - set_fact: db_proxy_ip={{ec2.instances[0].public_ip}}
+
+- name: Database setup
+  hosts: proxy
+  user: ubuntu
+  become: true
+  gather_facts: false
+
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python-simplejson
+
+  roles:
+    - mongodb
+
+- name: Stable
+  hosts: localhost
+  user: vagrant
+  vars:
+    group_name: stable
+  tasks:
+
+  - name : Provision aws instance
+    include: aws.yml
+    vars:
+      instance_type: t2.micro
+      image: ami-965e6bf3
+      region: us-east-2
+      subnet: subnet-bbb938d2
+      keyname: aws-key
+      aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+      aws_secret_key: "{{lookup('env', 'AWS_SECRET_ACCESS_KEY')}}"
+  
+  - set_fact: stable_ip={{ec2.instances[0].public_ip}}
+
+- name: Provision Stable
+  hosts: stable
+  become: true
+  gather_facts: false
+  vars:
+    MONGO_PORT: "3002"
+    MONGO_IP: "{{ hostvars.localhost.db_proxy_ip }}"
+    MONGO_USER: "{{ lookup('env', 'MONGO_USER') }}"
+    MONGO_PASSWORD: "{{ lookup('env', 'MONGO_PASSWORD') }}"
+    GITHUB_REPO: "github.ncsu.edu/tmdement/checkbox.io"
+
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python-simplejson
+
+  tasks:
+    - debug: 
+      msg: "{{ MONGO_IP }}"
+  roles:
+    - checkbox
+
+- name: Canary
+  hosts: localhost
+  user: vagrant
+  vars:
+    group_name: canary
+  tasks:
+  - name : Provision aws instance
+    include: aws.yml
+    vars:
+      instance_type: t2.micro
+      image: ami-965e6bf3
+      region: us-east-2
+      subnet: subnet-bbb938d2
+      keyname: aws-key
+      aws_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+      aws_secret_key: "{{lookup('env', 'AWS_SECRET_ACCESS_KEY')}}"
+
+  - set_fact: canary_ip={{ec2.instances[0].public_ip}}
+
+  
+- name: Provision Canary
+  hosts: canary
+  become: true
+  gather_facts: false
+  vars:
+    MONGO_PORT: "3002"
+    MONGO_IP: "{{ hostvars.localhost.db_proxy_ip }}"
+    MONGO_USER: "{{ lookup('env', 'MONGO_USER') }}"
+    MONGO_PASSWORD: "{{ lookup('env', 'MONGO_PASSWORD') }}"
+    GITHUB_REPO: "github.ncsu.edu/kbisht/checkbox.io"
+
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python-simplejson
+
+  tasks:
+    - debug: 
+      msg: "{{ MONGO_IP }}"
+  roles:
+    - checkbox
+
+
+- name: Provision Proxy
+  hosts: proxy
+  become: true
+  gather_facts: false
+  vars:
+    canary_ip: "{{ hostvars.localhost.canary_ip }}"
+    stable_ip: "{{ hostvars.localhost.stable_ip }}"
+  
+  pre_tasks:
+    - name: 'install pyhton2'
+      raw: sudo apt-get -y install python-simplejson
+
+  tasks:
+    - debug:
+      msg: "{{ canary_ip }}"
+    
+    - debug:
+      msg: "{{ stable_ip }}"
+    
+  roles:
+    - proxy
+    
+  

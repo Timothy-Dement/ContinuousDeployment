@@ -1,0 +1,111 @@
+var http      = require('http');
+var httpProxy = require('http-proxy');
+var exec = require('child_process').exec;
+var request = require("request");
+var redis = require('redis');
+
+var CANARY = 'http://{{ canary_ip }}/';
+var STABLE = 'http://{{ stable_ip }}/';
+
+
+// var GREEN = 'http://127.0.0.1:5060';
+// var BLUE  = 'http://127.0.0.1:9090';
+
+// Handle redis server
+var client = redis.createClient(6379, '127.0.0.1', {});
+client.auth('password');
+var TARGET = CANARY;
+client.set("alert", 1);
+
+var infrastructure =
+{
+  setup: function()
+  {
+    // Needed Variables
+    var hit = 5;
+    var percentage = 60;
+    var count = 0;
+    var compare = hit*percentage/100;
+    var PORT = 8080;
+    var CURRENT;
+    
+
+    //Proxy
+    var options = {};
+    var proxy   = httpProxy.createProxyServer(options);
+
+    // Start proxy server
+    var server  = http.createServer(function(req, res) {
+
+      if(req.url == '/'){
+        // Primary check, if alert is 0 -> canary server is down, else if alert is 1 -> canary server is up
+        client.get("alert", function(err, value) {
+          // console.log("Requested url: " + req.url);
+          if (value == 1) {
+            if (count < compare){
+              console.log("Proxy routing requests to STABLE at: {{ stable_ip }}");
+              proxy.web( req, res, { target: STABLE } );
+              CURRENT = STABLE;
+            } else {
+              console.log("Proxy routing requests to CANARY at: {{ canary_ip }}");
+              proxy.web( req, res, { target: CANARY } );
+              CURRENT = CANARY;
+            }
+            
+            count += 1;
+            if(count == 5){
+              count = 0;
+            }
+          }
+          else {
+            CURRENT = STABLE;
+            console.log("Just Stable server functioning...")
+            console.log("Proxy routing requests to STABLE at: {{ stable_ip }}");
+            proxy.web( req, res, { target: STABLE } );
+          }
+        });
+      } else {
+        proxy.web( req, res, { target: CURRENT } );
+      }
+    });
+    server.listen(PORT);
+    console.log("Proxy listening at port  : " + PORT);
+    console.log("Canary Server running at : " + CANARY);
+    console.log("Stable version running at: " + STABLE);
+
+    // Polling after 2 seconds
+    setInterval(function(){
+      var options = {
+        uri: TARGET
+      };
+      // Handles alert flag 
+      request(options, function(err,res,body){
+          if(!res || res.statusCode == 500){
+            CURRENT = STABLE; 
+            console.log("Canary server not functioning.!");
+            client.set("alert", 0);
+          }
+      });
+    },2000);
+
+  },
+
+  teardown: function()
+  {
+    exec('forever stopall', function()
+    {
+      console.log("infrastructure shutdown");
+      process.exit();
+    });
+  },
+}
+
+infrastructure.setup();
+
+// Make sure to clean up.
+process.on('exit', function(){infrastructure.teardown();} );
+process.on('SIGINT', function(){infrastructure.teardown();} );
+process.on('uncaughtException', function(err){
+  console.error(err);
+  infrastructure.teardown();
+});

@@ -1,0 +1,58 @@
+# Setup redis-server
+- name: Add repository
+  apt_repository:
+    repo: ppa:chris-lea/redis-server
+    update_cache: yes
+
+- name: Install redis
+  apt:
+    pkg: redis-server
+    state: latest
+    update_cache: yes
+
+- name: Place post-receive file on remote
+  template:
+    src: templates/redis.cnf.j2
+    dest: "/etc/redis/redis.conf"
+  
+- service:
+    name: redis-server
+    state: restarted
+
+# Setup for load balancer 
+- name: Install node packages
+  become: yes
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - "nodejs"
+    - "npm"
+    - "nodejs-legacy"
+
+- name: Check if directory exists
+  stat:
+    path: /home/{{ ansible_user }}/proxy_canary
+  register: directory_check
+
+- name: Create prod.git empty directory
+  file: path=/home/{{ ansible_ssh_user }}/proxy_canary/ state=directory
+  become: no
+  when: directory_check.stat.isdir is not defined
+
+- name: Copy the infrastructure file to remote
+  template:
+    src: templates/infrastructure.js.j2
+    dest: /home/{{ ansible_user }}/proxy_canary/infrastructure.js
+  become: no
+
+- name: Copy package.json to remote
+  template:
+    src: templates/package.json
+    dest: /home/{{ ansible_user }}/proxy_canary/package.json
+  become: yes
+
+- name: Run npm install
+  shell: npm install
+  args:
+    chdir: /home/{{ ansible_user }}/proxy_canary/

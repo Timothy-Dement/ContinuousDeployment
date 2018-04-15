@@ -1,0 +1,81 @@
+- name: Install mongodb pt 1
+  shell: "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5"
+
+- name: Install mongodb pt 2
+  shell: "echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list"
+
+- name: Export MONGO_USER environment variable
+  shell: "echo \"export MONGO_USER={{ lookup('env', 'MONGO_USER') }}\" >> /etc/environment"
+
+- name: Export MONGO_PORT environment variable
+  shell: "echo \"export MONGO_PORT=3002\" >> /etc/environment"
+
+- name: Export MONGO_PASS environment variable
+  shell: "echo \"export MONGO_PASSWORD={{ lookup('env', 'MONGO_PASSWORD') }}\" >> /etc/environment"
+
+# - name: Export MAIL_SMTP environment variable
+#   shell: "echo \"export MAIL_SMTP=smtp.gmail.com\" >> /etc/environment"
+
+# - name: Export MAIL_USER environment variable
+#   shell: "echo \"export MAIL_USER={{ lookup('env', 'MAIL_USER') }}\" >> /etc/environment"
+
+# - name: Export MAIL_PASSWORD environment variable
+#   shell: "echo \"export MAIL_PASSWORD={{ lookup('env', 'MAIL_PASSWORD') }}\" >> /etc/environment"
+
+- name: Export MONGO_IP environment variable
+  shell: "echo \"export MONGO_IP=localhost\" >> /etc/environment"
+
+- name: Install mongodb pt 3
+  apt:
+    name: mongodb-org
+    update_cache: yes
+
+- name: Install unzip
+  apt:
+    name: unzip
+
+- name: Installing Python-Pip
+  apt:
+    pkg: python-pip
+    state: latest
+
+- name: Installing Python pip 3
+  apt:
+    pkg: python3-pip
+    state: latest
+
+- name: Install the latest pymongo package
+  pip: name=pymongo state=latest use_mirrors=no
+
+- name: Intsall pymongo
+  pip:
+    name: pymongo
+    state: present
+
+- name: Create Db data directory
+  file: path=/data/db state=directory 
+
+- name: Change persmissions on db directory
+  shell: "sudo chmod 777 /data/db"
+
+- name: Start MongoDB service
+  become: yes
+  shell: "service mongod start"
+
+- name: Replace the Binding IP
+  replace:
+    path: /etc/mongod.conf
+    regexp: 'bindIp.*'
+    replace: 'bindIp: 0.0.0.0'
+    backup: no
+
+- name: Create MongoDb user
+  mongodb_user:
+    database: "admin"
+    name: "{{ lookup('env', 'MONGO_USER') }}"
+    password: "{{ lookup('env', 'MONGO_PASSWORD') }}"
+    roles: readWriteAnyDatabase,dbAdmin,userAdminAnyDatabase
+
+- name: Restart mongoDB service
+  become: yes
+  shell: "service mongod restart"
