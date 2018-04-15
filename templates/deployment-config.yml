@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkbox-deployment
+  labels:
+    app: checkbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: checkbox
+  template:
+    metadata:
+      labels:
+        app: checkbox
+    spec:
+      hostNetwork: true
+      containers:
+      - name: checkbox
+        image: sssaha2/checkbox:v7
