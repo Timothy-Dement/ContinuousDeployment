@@ -206,19 +206,6 @@ The `update-itrust-cluster.yml` playbook utilizes Ansible's `serial` feature to 
 
 ## Screencast
 
-**NOTE TO TEAMMATES:**
-
-This is the format for the YouTube links I have been using:
-
-```
-[![Milestone Two Screencast](https://img.youtube.com/vi/D37PnUXbMNw/0.jpg)]
-(https://youtu.be/D37PnUXbMNw)
-```
-
-Just replace `Milestone Two Screencast` with whatever title you'd like, and replace the two instances of `D37PnUXbMNw` with the ID of your YouTube video.
-
----
-
 For this milestone, we divided the screencasts between team members according to the tasks they worked on.
 
 The following screencast demonstrates the **Basic Deployment** and **Rolling Update** tasks:
