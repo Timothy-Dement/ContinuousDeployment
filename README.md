@@ -145,6 +145,17 @@ The Redis flagserver's main intention is to have key-value pairs mirrored among 
 
 ## 3. Canary Release
 
+***Relevant Files***:
+
+* ['canary-release/aws.yml'](canary-release/aws.yml)
+* ['canary-release/setup_servers.yml'](canary-release/setup_servers.yml)
+* ['canary-release/roles/checkbox/tasks/main.yml'](canary-release/roles/checkbox/tasks/main.yml)
+* ['canary-release/roles/mongodb/tasks/main.yml'](canary-release/roles/mongodb/tasks/main.yml)
+* ['canary-release/roles/proxy/tasks/main.yml'](canary-release/roles/proxy/tasks/main.yml)
+* ['canary-release/roles/proxy/templates/infrastructure.js.j2'](canary-release/roles/proxy/templates/infrastructure.js.j2)
+* ['canary-release/roles/proxy/templates/package.json'](canary-release/roles/proxy/templates/package.json)
+* ['canary-release/roles/proxy/templates/redis.cnf.j2'](canary-release/roles/proxy/templates/redis.cnf.j2)
+
 ## 4. Rolling Update
 
 ***Relevant Files***:
