@@ -128,5 +128,5 @@ The following screencast demonstrates the **Infrastructure Upgrade** task:
 The following screencast demonstrates the **Canary Release** task:
 
 
-[![Milestone One Screencast](https://img.youtube.com/vi/https://youtu.be/7oxKxBvVgy4/0.jpg)](https://youtu.be/https://youtu.be/7oxKxBvVgy4)
+[![Milestone One Screencast](https://img.youtube.com/vi/7oxKxBvVgy4/0.jpg)](https://youtu.be/7oxKxBvVgy4)
 
