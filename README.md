@@ -182,6 +182,8 @@ The canary release task consists of the following parts:
 2. We then log in to the proxy server and execute infrastructure.js file which contains the algorithm for balancing the load or incoming network traffic. The load balancer first checks if the canary server is functioning. If it is up and running, then we check the value of the count variable that stores the number of times the application is accessed. This value is compared and accordingly 60% of the requests are routed to the stable server and 40% to the canary server. But, if the canary server is down or not functioning, then an alert is raised and 100% traffic is routed to the stable server. To check this, you can stop the canary server from the ec2 management console.
 
 	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/roles/proxy/templates/infrastructure.js.j2)
+	
+* Note: For the purpose of visual demonstration, we are manually executing the infrastructure.js file in the screencast, but this task can very well be automated by including it in the proxy role used to provision the proxy server in the server_setup.yml file.
 
 ## 4. Rolling Update
 
