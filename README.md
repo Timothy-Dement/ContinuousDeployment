@@ -147,43 +147,44 @@ The Redis flagserver's main intention is to have key-value pairs mirrored among 
 
 ***Relevant Files***:
 
-* [canary-release/setup_servers.yml](canary-release/setup_servers.yml)
-* [canary-release/aws.yml](canary-release/aws.yml)
-* [canary-release/roles/checkbox/tasks/main.yml](canary-release/roles/checkbox/tasks/main.yml)
-* [canary-release/roles/mongodb/tasks/main.yml](canary-release/roles/mongodb/tasks/main.yml)
-* [canary-release/roles/proxy/tasks/main.yml](canary-release/roles/proxy/tasks/main.yml)
-* [canary-release/roles/proxy/templates/infrastructure.js.j2](canary-release/roles/proxy/templates/infrastructure.js.j2)
-* [canary-release/roles/proxy/templates/package.json](canary-release/roles/proxy/templates/package.json)
-* [canary-release/roles/proxy/templates/redis.cnf.j2](canary-release/roles/proxy/templates/redis.cnf.j2)
+* [`canary-release/setup_servers.yml`](canary-release/setup_servers.yml)
+* [`canary-release/aws.yml`](canary-release/aws.yml)
+* [`canary-release/roles/checkbox/tasks/main.yml`](canary-release/roles/checkbox/tasks/main.yml)
+* [`canary-release/roles/mongodb/tasks/main.yml`](canary-release/roles/mongodb/tasks/main.yml)
+* [`canary-release/roles/proxy/tasks/main.yml`](canary-release/roles/proxy/tasks/main.yml)
+* [`canary-release/roles/proxy/templates/infrastructure.js.j2`](canary-release/roles/proxy/templates/infrastructure.js.j2)
+* [`canary-release/roles/proxy/templates/package.json`](canary-release/roles/proxy/templates/package.json)
+* [`canary-release/roles/proxy/templates/redis.cnf.j2`](canary-release/roles/proxy/templates/redis.cnf.j2)
 
 ---
 
 The canary release task consists of the following parts:
 
-1. Provisioning and configuring the three AWS EC2 instances. For this we execute the playbook setup_servers.yml. The inventory file will be created and will be updated as the tasks in the playbook progress.
-* One instance would contain the proxy server for load balancing and the mongoDB database instance. 
+1. Provisioning and configuring the three AWS EC2 instances. For this we execute the playbook `setup_servers.yml`. The inventory file will be created and will be updated as the tasks in the playbook progress.
 
-	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L1-L71)
+	* One instance would contain the proxy server for load balancing and the mongoDB database instance. 
 
-* The second ec2 instance would contain the stable version of checkbox.io application. 
+		[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L1-L71)
 
-	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L73-L112)
+	* The second EC2 instance would contain the stable version of checkbox.io application. 
 
-* The third instance would be the canary server containing the new version of checkbox.io application. 
+		[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L73-L112)
 
-	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L114-L153)
+	* The third instance would be the canary server containing the new version of checkbox.io application. 
 
-* After setting up the stable and canary servers, their respective IPs are passed to the proxy server to enable the load balancing for these. The proxy server is then provisioned using the proxy role.
+		[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L114-L153)
 
-	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L156-L176)
+	* After setting up the stable and canary servers, their respective IPs are passed to the proxy server to enable the load balancing for these. The proxy server is then provisioned using the proxy role.
 
-* Both the stable as well canary server make use of the mongoDB instance residing in the proxy server.
+		[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/setup_servers.yml#L156-L176)
 
-2. We then log in to the proxy server and execute infrastructure.js file which contains the algorithm for balancing the load or incoming network traffic. The load balancer first checks if the canary server is functioning. If it is up and running, then we check the value of the count variable that stores the number of times the application is accessed. This value is compared and accordingly 60% of the requests are routed to the stable server and 40% to the canary server. But, if the canary server is down or not functioning, then an alert is raised and 100% traffic is routed to the stable server. To check this, you can stop the canary server from the ec2 management console.
+	* Both the stable as well canary server make use of the MongoDB instance residing in the proxy server.
+
+2. We then log in to the proxy server and execute `infrastructure.js` file which contains the algorithm for balancing the load for incoming network traffic. The load balancer first checks if the canary server is functioning. If it is up and running, then we check the value of the count variable that stores the number of times the application is accessed. This value is compared and accordingly 60% of the requests are routed to the stable server and 40% to the canary server. But, if the canary server is down or not functioning, then an alert is raised and 100% traffic is routed to the stable server. To check this, you can stop the canary server from the EC2 management console.
 
 	[&#8594; *GO TO IN FILE*](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/blob/deploy/canary-release/roles/proxy/templates/infrastructure.js.j2)
 	
-* Note: For the purpose of visual demonstration, we are manually executing the infrastructure.js file in the screencast, but this task can very well be automated by including it in the proxy role used to provision the proxy server in the server_setup.yml file.
+**Note:** For the purpose of visual demonstration, we are manually executing the `infrastructure.js` file in the screencast, but this task can very well be automated by including it in the proxy role used to provision the proxy server in the `server_setup.yml` file.
 
 ## 4. Rolling Update
 
