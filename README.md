@@ -9,6 +9,12 @@
 
 [&#8592; MASTER BRANCH](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT)
 
+## Screencast
+
+**NOTE:** Please watch at 1.5 speed or higher to hit the 4-minute mark (we wanted to include sufficient information in the screencast in order to show it as part of our resumes).
+
+[![Building a Continuous Deployment Pipeline](https://img.youtube.com/vi/aTZ-xmgezVw/0.jpg)](https://youtu.be/aTZ-xmgezVw)
+
 ## Automatic Recovery Tool
 
 ***Relevant Files:***
