@@ -7,7 +7,7 @@
 | Sourabh Saha | sssaha2 | New Relic<br/>Report |
 | Timothy Dement | tmdement | Autorecover<br/>Screencast<br/>Report |
 
-[&#8592; MASTER BRANCH](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT)
+[&#8592; MASTER BRANCH](https://github.com/Timothy-Dement/ContinuousDeployment/tree/master)
 
 ## Screencast
 
