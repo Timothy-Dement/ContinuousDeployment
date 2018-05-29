@@ -7,7 +7,7 @@
 | Sourabh Saha (sssaha2) |
 | Timothy Dement (tmdement) |
 
-[&#8592; MASTER BRANCH](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT)
+[&#8592; MASTER BRANCH](https://github.com/Timothy-Dement/ContinuousDeployment/tree/master)
 
 # Configuration and Build Milestone
 
