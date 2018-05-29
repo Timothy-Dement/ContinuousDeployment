@@ -7,7 +7,7 @@
 | Sourabh Saha (sssaha2) | Jenkins Customization&nbsp;&nbsp;/&nbsp;&nbsp;iTrust Commit Automation&nbsp;&nbsp;/&nbsp;&nbsp;iTrust Test Prioritization Analysis&nbsp;&nbsp;/&nbsp;&nbsp;Report |
 | Timothy Dement (tmdement) | Checkbox.io Test Generation&nbsp;&nbsp;/&nbsp;&nbsp;iTrust Commit Fuzzer&nbsp;&nbsp;/&nbsp;&nbsp;Screencast&nbsp;&nbsp;/&nbsp;&nbsp;Report |
 
-[&#8592; MASTER BRANCH](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT)
+[&#8592; MASTER BRANCH](https://github.com/Timothy-Dement/ContinuousDeployment/tree/master)
 
 # Testing and Analysis Milestone
 
