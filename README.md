@@ -7,10 +7,10 @@
 | Sourabh Saha (sssaha2) |
 | Timothy Dement (tmdement) |
 
-[CONFIGURATION AND BUILD MILESTONE &#8594;](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/cm+build)
+[CONFIGURATION AND BUILD MILESTONE &#8594;](https://github.com/Timothy-Dement/ContinuousDeployment/tree/cm+build)
 
-[TESTING AND ANALYSIS MILESTONE &#8594;](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/test+analysis)
+[TESTING AND ANALYSIS MILESTONE &#8594;](https://github.com/Timothy-Dement/ContinuousDeployment/tree/test+analysis)
 
-[DEPLOYMENT MILESTONE &#8594;](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/deploy)
+[DEPLOYMENT MILESTONE &#8594;](https://github.com/Timothy-Dement/ContinuousDeployment/tree/deploy)
 
-[SPECIAL MILESTONE &#8594;](https://github.ncsu.edu/tmdement/DEVOPS-PROJECT/tree/special)
+[SPECIAL MILESTONE &#8594;](https://github.com/Timothy-Dement/ContinuousDeployment/tree/special)
